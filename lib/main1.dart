@@ -1653,7 +1653,7 @@ Widget _buildSearchPage() {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: 165,
+        height: 150,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.045),
