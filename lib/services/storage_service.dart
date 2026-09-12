@@ -153,4 +153,29 @@ static Future<void> saveTextScale(
     value,
   );
 }
+// ============================================================
+// ЦВЕТ ИНТЕРФЕЙСА
+// ============================================================
+
+static const String _accentColorKey =
+    'settings_accent_color';
+
+static Future<int?> loadAccentColor() async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  return prefs.getInt(_accentColorKey);
+}
+
+static Future<void> saveAccentColor(
+  int value,
+) async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  await prefs.setInt(
+    _accentColorKey,
+    value,
+  );
+}
 }

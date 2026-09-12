@@ -66,6 +66,9 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Масштаб текста интерфейса.
   /// 1.0 = 100%.
   double _textScale = 1.0;
+  /// Основной цвет интерфейса.
+  Color _accentColor =
+    const Color(0xFFCDB4FF);
   /// Какая страница выбрана слева:
   /// 0 — Главная
   /// 1 — Законы
@@ -143,6 +146,21 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
     _loadFavorites();
 
     _loadTextScale();
+    Future<void> _loadAccentColor() async {
+  final savedValue =
+      await StorageService.loadAccentColor();
+
+  if (!mounted) return;
+
+  if (savedValue == null) {
+    return;
+  }
+
+  setState(() {
+    _accentColor = Color(savedValue);
+  });
+}
+    _loadAccentColor();
 
     /// Проверяем GitHub Releases после запуска приложения.
     _checkForUpdates();
@@ -400,7 +418,19 @@ Future<void> _toggleFavorite(LawArticle article) async {
   );
 },
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+  brightness: Brightness.dark,
+
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: _accentColor,
+    brightness: Brightness.dark,
+  ),
+
+  sliderTheme: SliderThemeData(
+    activeTrackColor: _accentColor,
+    thumbColor: _accentColor,
+  ),
+),
       home: Scaffold(
         backgroundColor: Colors.transparent,
         body: Opacity(
@@ -576,6 +606,17 @@ Future<void> _toggleFavorite(LawArticle article) async {
         value,
       );
     },
+    accentColor: _accentColor,
+
+onAccentColorChanged: (color) {
+  setState(() {
+    _accentColor = color;
+  });
+
+  StorageService.saveAccentColor(
+    color.toARGB32(),
+  );
+},
   );
 
       default:
