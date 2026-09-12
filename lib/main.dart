@@ -18,6 +18,7 @@ import 'widgets/article_widgets.dart';
 import 'services/article_copy_service.dart';
 import 'widgets/top_bar.dart';
 import 'widgets/app_sidebar.dart';
+import 'screens/settings_screen.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -62,13 +63,16 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
 
   /// Прозрачность всего окна.
   double _opacity = 0.96;
-
+  /// Масштаб текста интерфейса.
+  /// 1.0 = 100%.
+  double _textScale = 1.0;
   /// Какая страница выбрана слева:
   /// 0 — Главная
   /// 1 — Законы
   /// 2 — Правила RO
   /// 3 — Памятки
   /// 4 — Избранное
+  /// 5 — Настройки
   int _selectedPage = 0;
 
   /// Все статьи, загруженные из assets/data/laws.json.
@@ -138,6 +142,7 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
     /// Загружаем сохранённое избранное.
     _loadFavorites();
 
+    _loadTextScale();
 
     /// Проверяем GitHub Releases после запуска приложения.
     _checkForUpdates();
@@ -322,7 +327,16 @@ Future<void> _loadFavorites() async {
     _favoriteArticleIds = savedIds;
   });
 }
+Future<void> _loadTextScale() async {
+  final value =
+      await StorageService.loadTextScale();
 
+  if (!mounted) return;
+
+  setState(() {
+    _textScale = value;
+  });
+}
 /// Добавляет или убирает статью/правило из избранного.
 ///
 /// Само сохранение теперь выполняет StorageService.
@@ -372,6 +386,19 @@ Future<void> _toggleFavorite(LawArticle article) async {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context, child) {
+  final mediaQuery =
+      MediaQuery.of(context);
+
+  return MediaQuery(
+    data: mediaQuery.copyWith(
+      textScaler: TextScaler.linear(
+        _textScale,
+      ),
+    ),
+    child: child!,
+  );
+},
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
       home: Scaffold(
@@ -484,6 +511,10 @@ Future<void> _toggleFavorite(LawArticle article) async {
     onFavorites: () {
       _openPage(4);
     },
+
+    onSettings: () {
+      _openPage(5);
+    },
   );
 }
 
@@ -532,6 +563,20 @@ Future<void> _toggleFavorite(LawArticle article) async {
 
       case 4:
         return _buildFavoritesPage();
+
+      case 5:
+  return SettingsScreen(
+    textScale: _textScale,
+    onTextScaleChanged: (value) {
+      setState(() {
+        _textScale = value;
+      });
+
+      StorageService.saveTextScale(
+        value,
+      );
+    },
+  );
 
       default:
         return _buildHomePage();

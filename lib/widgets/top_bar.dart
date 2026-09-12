@@ -65,45 +65,56 @@ class _TopBarState extends State<TopBar> {
             onPanStart: (_) {
               widget.onStartDragging();
             },
-            child: const SizedBox(
-              width: 185,
-              height: 68,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.balance,
-                    size: 28,
-                  ),
-                  SizedBox(width: 10),
-                  Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center,
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tverskoy RO',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight:
-                              FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'by 5041nskiy',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontStyle:
-                              FontStyle.italic,
-                          color: Colors.white54,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            child: MediaQuery(
+  // Логотип не зависит от пользовательского
+  // масштаба текста интерфейса.
+  data: MediaQuery.of(context).copyWith(
+    textScaler: TextScaler.noScaling,
+  ),
+  child: const SizedBox(
+    width: 185,
+    height: 68,
+    child: Row(
+      children: [
+        Icon(
+          Icons.balance,
+          size: 28,
+        ),
+
+        SizedBox(width: 10),
+
+        Column(
+          mainAxisAlignment:
+              MainAxisAlignment.center,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Tverskoy RO',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight:
+                    FontWeight.w700,
               ),
             ),
+
+            SizedBox(height: 2),
+
+            Text(
+              'by. 5041nskiy',
+              style: TextStyle(
+                fontSize: 10,
+                fontStyle:
+                    FontStyle.italic,
+                color: Colors.white54,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+),
           ),
 
           const SizedBox(width: 10),

@@ -20,7 +20,6 @@ class WindowService {
     const windowOptions = WindowOptions(
       size: Size(1050, 700),
       minimumSize: Size(1050, 700),
-      maximumSize: Size(1050, 700),
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
@@ -30,7 +29,7 @@ class WindowService {
     await windowManager.waitUntilReadyToShow(
       windowOptions,
       () async {
-        await windowManager.setResizable(false);
+        await windowManager.setResizable(true);
         await windowManager.setAlwaysOnTop(true);
         await windowManager.show();
         await windowManager.focus();

@@ -128,4 +128,29 @@ class StorageService {
               <String>[],
     };
   }
+  // ============================================================
+// НАСТРОЙКИ ИНТЕРФЕЙСА
+// ============================================================
+
+static const String _textScaleKey =
+    'settings_text_scale';
+
+static Future<double> loadTextScale() async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  return prefs.getDouble(_textScaleKey) ?? 1.0;
+}
+
+static Future<void> saveTextScale(
+  double value,
+) async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  await prefs.setDouble(
+    _textScaleKey,
+    value,
+  );
+}
 }

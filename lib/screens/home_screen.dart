@@ -310,6 +310,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ],
     );
+
   }
 }
 
@@ -335,15 +336,22 @@ class _HomeQuickCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+Widget build(BuildContext context) {
+  final textScale =
+      MediaQuery.textScalerOf(context).scale(1.0);
+
+  final cardHeight =
+      165.0 +
+      ((textScale - 1.0).clamp(0.0, 0.3) * 100);
+
+  return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         // ВАЖНО:
         // 165 — текущая правильная высота.
         // Не уменьшать до 150, иначе снова словим overflow.
-        height: 165,
+        height: cardHeight,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white.withValues(alpha: 0.045),

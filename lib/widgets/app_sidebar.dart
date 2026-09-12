@@ -15,6 +15,7 @@ class AppSidebar extends StatelessWidget {
   final VoidCallback onRules;
   final VoidCallback onMemos;
   final VoidCallback onFavorites;
+  final VoidCallback onSettings;
 
   const AppSidebar({
     super.key,
@@ -25,6 +26,7 @@ class AppSidebar extends StatelessWidget {
     required this.onRules,
     required this.onMemos,
     required this.onFavorites,
+    required this.onSettings,
   });
 
   @override
@@ -84,6 +86,13 @@ class AppSidebar extends StatelessWidget {
           ),
 
           const Spacer(),
+
+          SidebarButton(
+            icon: Icons.settings_outlined,
+            title: 'Настройки',
+            selected: selectedPage == 5,
+            onTap: onSettings,
+          ),
 
           Text(
             'v$appVersion',
