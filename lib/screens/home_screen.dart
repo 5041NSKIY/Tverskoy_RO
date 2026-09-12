@@ -28,6 +28,7 @@ class HomeScreen extends StatelessWidget {
 
   final VoidCallback onCheckUpdates;
   final VoidCallback onInstallUpdate;
+  
 
   const HomeScreen({
     super.key,
@@ -44,6 +45,7 @@ class HomeScreen extends StatelessWidget {
     required this.onOpenMemos,
     required this.onCheckUpdates,
     required this.onInstallUpdate,
+    
   });
 
   @override
@@ -277,37 +279,7 @@ class HomeScreen extends StatelessWidget {
 
         const SizedBox(height: 12),
 
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.025),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.06),
-            ),
-          ),
-          child: const Row(
-            children: [
-              Icon(
-                Icons.keyboard_outlined,
-                size: 20,
-                color: Colors.white54,
-              ),
-
-              SizedBox(width: 10),
-
-              Expanded(
-                child: Text(
-                  'Ctrl + 1 — мгновенно показать или скрыть оверлей.',
-                  style: TextStyle(
-                    color: Colors.white54,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        
       ],
     );
 

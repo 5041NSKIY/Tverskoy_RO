@@ -178,4 +178,55 @@ static Future<void> saveAccentColor(
     value,
   );
 }
+// ============================================================
+// РАЗМЕР ОКНА
+// ============================================================
+
+static const String _windowWidthKey =
+    'settings_window_width';
+
+static const String _windowHeightKey =
+    'settings_window_height';
+
+/// Загружает сохранённый размер окна.
+///
+/// Если пользователь ещё не менял размер,
+/// возвращаем стандартные 1050 × 700.
+static Future<Map<String, double>>
+    loadWindowSize() async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  final width =
+      prefs.getDouble(_windowWidthKey) ??
+          1050.0;
+
+  final height =
+      prefs.getDouble(_windowHeightKey) ??
+          700.0;
+
+  return {
+    'width': width,
+    'height': height,
+  };
+}
+
+/// Сохраняет текущий размер окна.
+static Future<void> saveWindowSize({
+  required double width,
+  required double height,
+}) async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  await prefs.setDouble(
+    _windowWidthKey,
+    width,
+  );
+
+  await prefs.setDouble(
+    _windowHeightKey,
+    height,
+  );
+}
 }

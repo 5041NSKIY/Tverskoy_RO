@@ -16,6 +16,7 @@ class AppSidebar extends StatelessWidget {
   final VoidCallback onMemos;
   final VoidCallback onFavorites;
   final VoidCallback onSettings;
+  final String hotkeyLabel;
 
   const AppSidebar({
     super.key,
@@ -27,6 +28,7 @@ class AppSidebar extends StatelessWidget {
     required this.onMemos,
     required this.onFavorites,
     required this.onSettings,
+    required this.hotkeyLabel,
   });
 
   @override
@@ -105,13 +107,13 @@ class AppSidebar extends StatelessWidget {
 
           const SizedBox(height: 4),
 
-          const Text(
-            'Ctrl + 1 — показать / скрыть',
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 11,
-            ),
-          ),
+          Text(
+  '$hotkeyLabel — показать / скрыть',
+  style: const TextStyle(
+    color: Colors.white54,
+    fontSize: 11,
+  ),
+),
         ],
       ),
     );

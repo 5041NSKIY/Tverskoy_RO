@@ -69,6 +69,10 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Основной цвет интерфейса.
   Color _accentColor =
     const Color(0xFFCDB4FF);
+
+  /// Текущий глобальный хоткей показа / скрытия оверлея.
+  HotkeyConfig _hotkeyConfig =
+      HotkeyConfig.defaultConfig;
   /// Какая страница выбрана слева:
   /// 0 — Главная
   /// 1 — Законы
@@ -127,14 +131,14 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Что сейчас введено в строку поиска.
   String _searchQuery = '';
   // ==========================================================
-  // ГЛОБАЛЬНЫЙ ХОТКЕЙ CTRL + 1
+  // ГЛОБАЛЬНЫЙ ХОТКЕЙ
   // ==========================================================
 
   @override
   void initState() {
     super.initState();
 
-    /// Регистрируем Ctrl + 1.
+    /// Загружаем и регистрируем пользовательский хоткей.
     _registerHotKey();
 
     /// Загружаем статьи из JSON.
@@ -375,25 +379,37 @@ Future<void> _toggleFavorite(LawArticle article) async {
 }
 
   // ==========================================================
-  // CTRL + 1 — ПОКАЗАТЬ / СКРЫТЬ
+  // ГЛОБАЛЬНЫЙ ХОТКЕЙ — ПОКАЗАТЬ / СКРЫТЬ
   // ==========================================================
 
-  /// ЭТА ХУЙНЯ ОТВЕЧАЕТ ЗА САМО ПОВЕДЕНИЕ CTRL + 1.
-  Future<void> _registerHotKey() async {
-  await HotkeyService.registerToggleOverlay(
-    onPressed: () async {
-      if (_overlayVisible) {
-        await windowManager.hide();
-        _overlayVisible = false;
-      } else {
-        await windowManager.show();
-        await windowManager.setAlwaysOnTop(true);
-        await windowManager.focus();
-        _overlayVisible = true;
-      }
-    },
-  );
+  /// Поведение глобального хоткея показа / скрытия окна.
+  Future<void> _toggleOverlay() async {
+  if (_overlayVisible) {
+    await windowManager.hide();
+    _overlayVisible = false;
+  } else {
+    await windowManager.show();
+    await windowManager.setAlwaysOnTop(true);
+    await windowManager.focus();
+    _overlayVisible = true;
+  }
 }
+
+/// Загружает сохранённый хоткей и регистрирует его в Windows.
+/// Для старых пользователей без настройки остаётся Ctrl + 1.
+Future<void> _registerHotKey() async {
+  final config =
+      await HotkeyService.registerToggleOverlay(
+    onPressed: _toggleOverlay,
+  );
+
+  if (!mounted) return;
+
+  setState(() {
+    _hotkeyConfig = config;
+  });
+}
+
 
   // ==========================================================
   // ОСНОВНОЙ КАРКАС ОКНА
@@ -515,7 +531,7 @@ Future<void> _toggleFavorite(LawArticle article) async {
   return AppSidebar(
     selectedPage: _selectedPage,
     appVersion: appVersion,
-
+    hotkeyLabel: _hotkeyConfig.displayLabel,
     onHome: () {
       _openPage(0);
     },
@@ -595,29 +611,47 @@ Future<void> _toggleFavorite(LawArticle article) async {
         return _buildFavoritesPage();
 
       case 5:
-  return SettingsScreen(
-    textScale: _textScale,
-    onTextScaleChanged: (value) {
-      setState(() {
-        _textScale = value;
-      });
+        return SettingsScreen(
+          textScale: _textScale,
 
-      StorageService.saveTextScale(
-        value,
-      );
-    },
-    accentColor: _accentColor,
+          onTextScaleChanged: (value) {
+            setState(() {
+              _textScale = value;
+            });
 
-onAccentColorChanged: (color) {
-  setState(() {
-    _accentColor = color;
-  });
+            StorageService.saveTextScale(
+              value,
+            );
+          },
 
-  StorageService.saveAccentColor(
-    color.toARGB32(),
-  );
-},
-  );
+          accentColor: _accentColor,
+
+          onAccentColorChanged: (color) {
+            setState(() {
+              _accentColor = color;
+            });
+
+            StorageService.saveAccentColor(
+              color.toARGB32(),
+            );
+          },
+
+          hotkeyConfig: _hotkeyConfig,
+
+          onHotkeyChanged: (config) async {
+            await HotkeyService
+                .updateToggleOverlayHotKey(
+              config: config,
+              onPressed: _toggleOverlay,
+            );
+
+            if (!mounted) return;
+
+            setState(() {
+              _hotkeyConfig = config;
+            });
+          },
+        );
 
       default:
         return _buildHomePage();
