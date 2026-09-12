@@ -8,6 +8,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'models/law_models.dart';
 import 'services/storage_service.dart';
+import 'services/update_service.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -195,158 +196,53 @@ final List<TextEditingController> _weeklyReportExamsControllers = [
 // АВТООБНОВЛЕНИЕ ЧЕРЕЗ GITHUB RELEASES
 // ==========================================================
 
-/// GitHub API со списком релизов.
-/// Используем именно /releases, а не /releases/latest:
-/// latest НЕ возвращает prerelease, а у нас beta-релизы.
-static const String _githubReleasesApi =
-    'https://api.github.com/repos/5041NSKIY/Tverskoy_RO/releases?per_page=20';
-
-/// Превращает версию вроде "v0.1.2-beta" или "0.1.2 beta"
-/// в три числа [0, 1, 2].
-List<int> _versionNumbers(String value) {
-  final match = RegExp(r'(\d+)\.(\d+)\.(\d+)').firstMatch(value);
-
-  if (match == null) {
-    return const [0, 0, 0];
+/// Проверяет GitHub Releases через UpdateService.
+Future<void> _checkForUpdates({
+  bool manual = false,
+}) async {
+  if (_checkingForUpdate || _downloadingUpdate) {
+    return;
   }
-
-  return [
-    int.tryParse(match.group(1) ?? '') ?? 0,
-    int.tryParse(match.group(2) ?? '') ?? 0,
-    int.tryParse(match.group(3) ?? '') ?? 0,
-  ];
-}
-
-/// true, если candidate новее current.
-bool _isVersionNewer(String candidate, String current) {
-  final a = _versionNumbers(candidate);
-  final b = _versionNumbers(current);
-
-  for (int i = 0; i < 3; i++) {
-    if (a[i] > b[i]) return true;
-    if (a[i] < b[i]) return false;
-  }
-
-  // При одинаковых цифрах стабильный релиз считаем новее beta/alpha/rc.
-  final candidateLower = candidate.toLowerCase();
-  final currentLower = current.toLowerCase();
-
-  bool isPreRelease(String value) =>
-      value.contains('beta') ||
-      value.contains('alpha') ||
-      value.contains('rc');
-
-  return isPreRelease(currentLower) && !isPreRelease(candidateLower);
-}
-
-/// Проверяет опубликованные GitHub Releases и ищет самый новый Setup EXE.
-Future<void> _checkForUpdates({bool manual = false}) async {
-  if (_checkingForUpdate || _downloadingUpdate) return;
 
   if (mounted) {
     setState(() {
       _checkingForUpdate = true;
+
       if (manual) {
-        _updateStatus = 'Проверяем обновления...';
+        _updateStatus =
+            'Проверяем обновления...';
       }
     });
   }
 
-  final client = HttpClient();
-
   try {
-    final request = await client.getUrl(Uri.parse(_githubReleasesApi));
-    request.headers.set('Accept', 'application/vnd.github+json');
-    request.headers.set('User-Agent', 'Tverskoy-RO-Updater');
-    request.headers.set('X-GitHub-Api-Version', '2026-03-10');
-
-    final response = await request.close();
-
-    if (response.statusCode != HttpStatus.ok) {
-      throw HttpException(
-        'GitHub вернул HTTP ${response.statusCode}',
-      );
-    }
-
-    final body = await response.transform(utf8.decoder).join();
-    final List<dynamic> releases = json.decode(body);
-
-    Map<String, dynamic>? newestRelease;
-
-    for (final rawRelease in releases) {
-      if (rawRelease is! Map<String, dynamic>) continue;
-      if (rawRelease['draft'] == true) continue;
-
-      final tag = (rawRelease['tag_name'] ?? '').toString();
-      if (tag.isEmpty) continue;
-
-      final assets = rawRelease['assets'];
-      if (assets is! List) continue;
-
-      final hasInstaller = assets.any((asset) {
-        if (asset is! Map) return false;
-        final name = (asset['name'] ?? '').toString().toLowerCase();
-        return name.startsWith('tverskoy_ro_setup_') &&
-            name.endsWith('.exe');
-      });
-
-      if (!hasInstaller) continue;
-
-      if (newestRelease == null ||
-          _isVersionNewer(
-            tag,
-            (newestRelease['tag_name'] ?? '').toString(),
-          )) {
-        newestRelease = rawRelease;
-      }
-    }
+    final result =
+        await UpdateService.checkForUpdate(
+      currentVersion: appVersion,
+    );
 
     if (!mounted) return;
 
-    if (newestRelease == null) {
+    if (!result.hasUpdate) {
       setState(() {
         _availableUpdateVersion = null;
         _updateDownloadUrl = null;
-        _updateStatus = 'Опубликованных обновлений пока нет.';
+        _updateStatus =
+            'Установлена актуальная версия.';
       });
+
       return;
-    }
-
-    final newestTag = (newestRelease['tag_name'] ?? '').toString();
-
-    if (!_isVersionNewer(newestTag, appVersion)) {
-      setState(() {
-        _availableUpdateVersion = null;
-        _updateDownloadUrl = null;
-        _updateStatus = 'Установлена актуальная версия.';
-      });
-      return;
-    }
-
-    final assets = newestRelease['assets'] as List<dynamic>;
-    Map<dynamic, dynamic>? installerAsset;
-
-    for (final asset in assets) {
-      if (asset is! Map) continue;
-      final name = (asset['name'] ?? '').toString().toLowerCase();
-      if (name.startsWith('tverskoy_ro_setup_') &&
-          name.endsWith('.exe')) {
-        installerAsset = asset;
-        break;
-      }
-    }
-
-    final downloadUrl =
-        (installerAsset?['browser_download_url'] ?? '').toString();
-
-    if (downloadUrl.isEmpty) {
-      throw const FormatException('В релизе нет ссылки на Setup EXE.');
     }
 
     setState(() {
-      _availableUpdateVersion = newestTag;
-      _updateDownloadUrl = downloadUrl;
-      _updateStatus = 'Доступно обновление $newestTag';
+      _availableUpdateVersion =
+          result.version;
+
+      _updateDownloadUrl =
+          result.downloadUrl;
+
+      _updateStatus =
+          'Доступно обновление ${result.version}';
     });
   } catch (error) {
     if (!mounted) return;
@@ -357,8 +253,6 @@ Future<void> _checkForUpdates({bool manual = false}) async {
           : null;
     });
   } finally {
-    client.close(force: true);
-
     if (mounted) {
       setState(() {
         _checkingForUpdate = false;
