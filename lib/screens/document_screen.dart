@@ -17,6 +17,8 @@ class DocumentScreen extends StatelessWidget {
   final String documentName;
   final List<LawArticle> articles;
   final bool isRulesDocument;
+  final String? scrollToArticleId;
+  final VoidCallback onScrollCompleted;
 
   final VoidCallback onBack;
   final Widget Function(LawArticle article) articleBuilder;
@@ -28,6 +30,8 @@ class DocumentScreen extends StatelessWidget {
     required this.isRulesDocument,
     required this.onBack,
     required this.articleBuilder,
+    required this.scrollToArticleId,
+    required this.onScrollCompleted,
   });
 
   @override
@@ -41,9 +45,11 @@ class DocumentScreen extends StatelessWidget {
     final groupedArticles =
         _groupArticles(documentArticles);
 
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
+    return SingleChildScrollView(
+  padding: const EdgeInsets.all(24),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
         // ------------------------------------------------------
         // НАЗАД К СПИСКУ ЗАКОНОВ / ПРАВИЛ
         // ------------------------------------------------------
@@ -111,11 +117,17 @@ class DocumentScreen extends StatelessWidget {
               ),
 
             for (final article
-                in chapterEntry.value)
-              articleBuilder(article),
+    in chapterEntry.value)
+  _AutoScrollArticle(
+    shouldScroll:
+        scrollToArticleId == article.id,
+    onScrolled: onScrollCompleted,
+    child: articleBuilder(article),
+  ),
           ],
         ],
-      ],
+         ],
+      ),
     );
   }
 
@@ -192,5 +204,74 @@ class DocumentScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+  }
+// ============================================================
+// АВТОСКРОЛЛ ДО СТАТЬИ
+// ============================================================
+
+class _AutoScrollArticle extends StatefulWidget {
+  final bool shouldScroll;
+  final VoidCallback onScrolled;
+  final Widget child;
+
+  const _AutoScrollArticle({
+    required this.shouldScroll,
+    required this.onScrolled,
+    required this.child,
+  });
+
+  @override
+  State<_AutoScrollArticle> createState() =>
+      _AutoScrollArticleState();
+}
+
+class _AutoScrollArticleState
+    extends State<_AutoScrollArticle> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.shouldScroll) {
+      _scheduleScroll();
+    }
+  }
+
+  @override
+  void didUpdateWidget(
+    covariant _AutoScrollArticle oldWidget,
+  ) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.shouldScroll &&
+        !oldWidget.shouldScroll) {
+      _scheduleScroll();
+    }
+  }
+
+  void _scheduleScroll() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        if (!mounted) return;
+
+        await Scrollable.ensureVisible(
+          context,
+          duration: const Duration(
+            milliseconds: 350,
+          ),
+          curve: Curves.easeOutCubic,
+          alignment: 0.15,
+        );
+
+        if (!mounted) return;
+
+        widget.onScrolled();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }

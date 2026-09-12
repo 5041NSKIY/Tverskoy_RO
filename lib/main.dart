@@ -17,6 +17,7 @@ import 'screens/home_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/document_screen.dart';
 import 'screens/search_screen.dart';
+import 'widgets/article_widgets.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -81,6 +82,10 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Какая статья сейчас раскрыта.
   /// Одновременно раскрыта только одна статья.
   String? _expandedArticle;
+
+  /// Статья, до которой нужно автоматически прокрутить
+  /// после перехода из результатов поиска.
+  String? _pendingScrollArticleId;
 
   /// Что было только что скопировано.
   /// Нужна для надписи "✓ Скопировано".
@@ -3822,6 +3827,18 @@ const SizedBox(height: 10),
     articleBuilder: (article) {
       return _buildArticleTile(article);
     },
+    scrollToArticleId:
+    _pendingScrollArticleId,
+
+onScrollCompleted: () {
+  if (_pendingScrollArticleId == null) {
+    return;
+  }
+
+  setState(() {
+    _pendingScrollArticleId = null;
+  });
+},
   );
 }
 
@@ -3832,234 +3849,86 @@ const SizedBox(height: 10),
   /// ЭТОТ РАЗДЕЛ ОТВЕЧАЕТ ЗА ОДНУ СТАТЬЮ:
   /// заголовок, стрелку раскрытия, копирование и текст частей.
   Widget _buildArticleTile(
-    LawArticle article, {
-    bool fromSearch = false,
-  }) {
-    final isExpanded = _expandedArticle == article.id;
-    final wholeArticleCopyId = '${article.id}_all';
-    final isFavorite = _favoriteArticleIds.contains(article.id);
+  LawArticle article, {
+  bool fromSearch = false,
+}) {
+  final isExpanded =
+      _expandedArticle == article.id;
 
-    /// Правила RO рисуем иначе, чем статьи законов.
-    final isRoRule =
-        article.document == 'Общие правила проекта' ||
-        article.document == 'Правила государственных организаций';
+  final isFavorite =
+      _favoriteArticleIds.contains(
+    article.id,
+  );
 
-    final titleText = isRoRule
-        ? '${article.documentShortName} · п. ${article.number}'
-        : article.title.trim().isEmpty
-            ? '${article.documentShortName} Ст. ${article.number}'
-            : '${article.documentShortName} Ст. ${article.number} — ${article.title}';
+  final isRoRule =
+      article.document ==
+          'Общие правила проекта' ||
+      article.document ==
+          'Правила государственных организаций';
 
-    final rulePreview = isRoRule && article.parts.isNotEmpty
-        ? article.parts.first.text
-        : '';
+  return ArticleTile(
+    article: article,
 
-    return Container(
-      margin: EdgeInsets.only(bottom: isRoRule ? 8 : 6),
-      decoration: BoxDecoration(
-        color: isExpanded
-            ? Colors.white.withValues(alpha: 0.055)
-            : Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
-        border: isExpanded
-            ? Border.all(
-                color: Colors.white.withValues(alpha: 0.10),
-              )
-            : null,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 2,
-            ),
-            dense: isRoRule,
-            visualDensity: isRoRule
-                ? const VisualDensity(vertical: -1)
-                : VisualDensity.standard,
-            title: Text(
-              titleText,
-              style: TextStyle(
-                fontSize: isRoRule ? 14 : 15,
-                fontWeight: isRoRule
-                    ? FontWeight.w700
-                    : FontWeight.w600,
-              ),
-            ),
-            subtitle: isRoRule
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      rulePreview,
-                      maxLines: isExpanded ? 1 : 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        height: 1.35,
-                        color: Colors.white54,
-                      ),
-                    ),
-                  )
-                : null,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  tooltip: isFavorite
-                      ? 'Убрать из избранного'
-                      : 'Добавить в избранное',
-                  icon: Icon(
-                    isFavorite ? Icons.star : Icons.star_border,
-                    size: 19,
-                    color: isFavorite
-                        ? Colors.amberAccent
-                        : Colors.white54,
-                  ),
-                  onPressed: () {
-                    _toggleFavorite(article);
-                  },
-                ),
+    isExpanded: isExpanded,
+    isFavorite: isFavorite,
 
-                if (_copiedPart == wholeArticleCopyId)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      '✓',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.greenAccent,
-                      ),
-                    ),
-                  )
-                else
-                  IconButton(
-                    tooltip: isRoRule
-                        ? 'Копировать пункт'
-                        : 'Копировать статью целиком',
-                    icon: const Icon(
-                      Icons.copy,
-                      size: 18,
-                    ),
-                    onPressed: () {
-                      _copyWholeArticle(article);
-                    },
-                  ),
+    copiedPartId: _copiedPart,
 
-                Icon(
-                  isExpanded
-                      ? Icons.expand_less
-                      : Icons.expand_more,
-                  size: 20,
-                  color: Colors.white70,
-                ),
-              ],
-            ),
-            onTap: () {
-              if (fromSearch) {
-                setState(() {
-                  _selectedPage = isRoRule ? 2 : 1;
-                  _selectedDocument = article.document;
-                  _expandedArticle = article.id;
-                  _searchQuery = '';
-                });
-                return;
-              }
+    onToggleFavorite: () {
+      _toggleFavorite(article);
+    },
 
-              setState(() {
-                _expandedArticle = isExpanded ? null : article.id;
-              });
-            },
-          ),
+    onCopyWholeArticle: () {
+      _copyWholeArticle(article);
+    },
 
-          if (isExpanded)
-            Container(
-              margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.08),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final part in article.parts)
-                    _buildArticlePart(article, part),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+    onCopyPart: (
+      article,
+      part,
+    ) {
+      _copyArticlePart(
+        article,
+        part,
+      );
+    },
 
-  // ==========================================================
-  // ОДНА ЧАСТЬ СТАТЬИ
-  // ==========================================================
+    onTapArticle: () {
+      // ----------------------------------------------
+      // ЕСЛИ СТАТЬЮ ОТКРЫЛИ ИЗ ПОИСКА
+      // ----------------------------------------------
+      if (fromSearch) {
+        setState(() {
+          _selectedPage =
+              isRoRule ? 2 : 1;
 
-  /// ЭТОТ РАЗДЕЛ ОТВЕЧАЕТ ЗА "ч. 1", "ч. 2" И Т.Д.
-  Widget _buildArticlePart(
-    LawArticle article,
-    LawArticlePart part,
-  ) {
-    final copyId = '${article.id}_${part.number}';
-    final isRoRule =
-        article.document == 'Общие правила проекта' ||
-        article.document == 'Правила государственных организаций';
+          _selectedDocument =
+              article.document;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: SelectableText(
-              isRoRule
-                  ? part.text
-                  : 'ч. ${part.number} — ${part.text}',
-              style: TextStyle(
-                fontSize: isRoRule ? 14 : 15,
-                height: isRoRule ? 1.4 : 1.5,
-                color: Colors.white70,
-              ),
-            ),
-          ),
+          _expandedArticle =
+              article.id;
 
-          if (_copiedPart == copyId)
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 12,
-              ),
-              child: Text(
-                '✓',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.greenAccent,
-                ),
-              ),
-            )
-          else
-            IconButton(
-              tooltip: isRoRule
-                  ? 'Копировать текст пункта'
-                  : 'Копировать часть',
-              icon: const Icon(
-                Icons.copy,
-                size: 18,
-              ),
-              onPressed: () {
-                _copyArticlePart(article, part);
-              },
-            ),
-        ],
-      ),
-    );
-  }
+          _pendingScrollArticleId = 
+              article.id;
+
+          _searchQuery = '';
+        });
+
+        return;
+      }
+
+      // ----------------------------------------------
+      // ОБЫЧНОЕ РАСКРЫТИЕ / ЗАКРЫТИЕ
+      // ----------------------------------------------
+      setState(() {
+        _expandedArticle =
+            isExpanded
+                ? null
+                : article.id;
+      });
+    },
+  );
+}
+
 
   // ==========================================================
   // КОПИРОВАНИЕ
