@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'models/law_models.dart';
 import 'services/storage_service.dart';
 import 'services/update_service.dart';
+import 'services/window_service.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -23,24 +24,8 @@ const String appVersion = '0.1.1 beta';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await windowManager.ensureInitialized();
-
-  const windowOptions = WindowOptions(
-    size: Size(1050, 700),
-    minimumSize: Size(1050, 700),
-    maximumSize: Size(1050, 700),
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.hidden,
-  );
-
-  await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.setResizable(false);
-    await windowManager.setAlwaysOnTop(true);
-    await windowManager.show();
-    await windowManager.focus();
-  });
+  // Настраиваем окно Windows до запуска интерфейса.
+  await WindowService.initialize();
 
   runApp(const MajesticLawApp());
 }
