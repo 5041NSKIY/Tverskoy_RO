@@ -8,6 +8,7 @@ import 'models/law_models.dart';
 import 'services/storage_service.dart';
 import 'services/update_service.dart';
 import 'services/window_service.dart';
+import 'services/hotkey_service.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -148,13 +149,6 @@ final List<TextEditingController> _weeklyReportExamsControllers = [
   // ГЛОБАЛЬНЫЙ ХОТКЕЙ CTRL + 1
   // ==========================================================
 
-  /// ЭТА ХУЙНЯ ОТВЕЧАЕТ ЗА CTRL + 1 ДАЖЕ КОГДА GTA В ФОКУСЕ.
-  final HotKey _toggleHotKey = HotKey(
-    key: PhysicalKeyboardKey.digit1,
-    modifiers: [HotKeyModifier.control],
-    scope: HotKeyScope.system,
-  );
-
   @override
   void initState() {
     super.initState();
@@ -287,9 +281,7 @@ Future<void> _downloadAndInstallUpdate() async {
     // Установщик уже запущен.
     // Теперь освобождаем глобальный хоткей
     // и закрываем текущую версию приложения.
-    await hotKeyManager.unregister(
-      _toggleHotKey,
-    );
+    await HotkeyService.unregisterToggleOverlay();
 
     await windowManager.close();
   } catch (error) {
@@ -399,7 +391,7 @@ for (final controller in _weeklyReportExamsControllers) {
   controller.dispose();
 }
     /// Освобождаем хоткей при закрытии приложения.
-    hotKeyManager.unregister(_toggleHotKey);
+    HotkeyService.unregisterToggleOverlay();
     super.dispose();
   }
 
@@ -576,21 +568,20 @@ Future<void> _loadWeeklyReport() async {
 
   /// ЭТА ХУЙНЯ ОТВЕЧАЕТ ЗА САМО ПОВЕДЕНИЕ CTRL + 1.
   Future<void> _registerHotKey() async {
-    await hotKeyManager.register(
-      _toggleHotKey,
-      keyDownHandler: (_) async {
-        if (_overlayVisible) {
-          await windowManager.hide();
-          _overlayVisible = false;
-        } else {
-          await windowManager.show();
-          await windowManager.setAlwaysOnTop(true);
-          await windowManager.focus();
-          _overlayVisible = true;
-        }
-      },
-    );
-  }
+  await HotkeyService.registerToggleOverlay(
+    onPressed: () async {
+      if (_overlayVisible) {
+        await windowManager.hide();
+        _overlayVisible = false;
+      } else {
+        await windowManager.show();
+        await windowManager.setAlwaysOnTop(true);
+        await windowManager.focus();
+        _overlayVisible = true;
+      }
+    },
+  );
+}
 
   // ==========================================================
   // ОСНОВНОЙ КАРКАС ОКНА
@@ -767,7 +758,7 @@ Future<void> _loadWeeklyReport() async {
           IconButton(
             tooltip: 'Закрыть приложение',
             onPressed: () async {
-              await hotKeyManager.unregister(_toggleHotKey);
+              await HotkeyService.unregisterToggleOverlay();
               await windowManager.close();
             },
             icon: const Icon(
