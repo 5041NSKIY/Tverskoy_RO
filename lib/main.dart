@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -276,86 +274,48 @@ Future<void> _downloadAndInstallUpdate() async {
   setState(() {
     _downloadingUpdate = true;
     _updateProgress = 0;
-    _updateStatus = 'Скачиваем $updateVersion...';
+    _updateStatus =
+        'Скачиваем $updateVersion...';
   });
 
-  final client = HttpClient();
-  IOSink? sink;
-
   try {
-    final request = await client.getUrl(Uri.parse(downloadUrl));
-    request.headers.set('User-Agent', 'Tverskoy-RO-Updater');
+    await UpdateService.downloadAndLaunchInstaller(
+      downloadUrl: downloadUrl,
+      version: updateVersion,
+      onProgress: (progress) {
+        if (!mounted) return;
 
-    final response = await request.close();
-
-    if (response.statusCode != HttpStatus.ok) {
-      throw HttpException(
-        'Не удалось скачать обновление: HTTP ${response.statusCode}',
-      );
-    }
-
-    final safeVersion = updateVersion.replaceAll(
-      RegExp(r'[^0-9A-Za-z._-]'),
-      '_',
-    );
-
-    final installerFile = File(
-      '${Directory.systemTemp.path}\\Tverskoy_RO_Setup_$safeVersion.exe',
-    );
-
-    sink = installerFile.openWrite();
-
-    final totalBytes = response.contentLength;
-    int receivedBytes = 0;
-
-    await for (final chunk in response) {
-      sink.add(chunk);
-      receivedBytes += chunk.length;
-
-      if (mounted && totalBytes > 0) {
         setState(() {
-          _updateProgress = receivedBytes / totalBytes;
+          _updateProgress = progress;
         });
-      }
-    }
-
-    await sink.flush();
-    await sink.close();
-    sink = null;
-
-    if (mounted) {
-      setState(() {
-        _updateProgress = 1;
-        _updateStatus = 'Запускаем установщик $updateVersion...';
-      });
-    }
-
-    await Process.start(
-      installerFile.path,
-      const [
-        '/SP-',
-        '/CLOSEAPPLICATIONS',
-        '/RESTARTAPPLICATIONS',
-      ],
-      mode: ProcessStartMode.detached,
+      },
     );
 
-    await hotKeyManager.unregister(_toggleHotKey);
+    if (!mounted) return;
+
+    setState(() {
+      _updateProgress = 1;
+      _updateStatus =
+          'Запускаем установщик $updateVersion...';
+    });
+
+    // Установщик уже запущен.
+    // Теперь освобождаем глобальный хоткей
+    // и закрываем текущую версию приложения.
+    await hotKeyManager.unregister(
+      _toggleHotKey,
+    );
+
     await windowManager.close();
   } catch (error) {
-    try {
-      await sink?.close();
-    } catch (_) {}
-
     if (!mounted) return;
 
     setState(() {
       _downloadingUpdate = false;
       _updateProgress = null;
-      _updateStatus = 'Ошибка обновления: $error';
+      _updateStatus =
+          'Ошибка обновления: $error';
     });
-  } finally {
-    client.close(force: true);
   }
 }
 

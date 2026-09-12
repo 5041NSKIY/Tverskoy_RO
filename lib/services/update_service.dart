@@ -243,4 +243,89 @@ class UpdateService {
       client.close(force: true);
     }
   }
+    // ==========================================================
+  // СКАЧИВАНИЕ И ЗАПУСК ОБНОВЛЕНИЯ
+  // ==========================================================
+
+  /// Скачивает Setup EXE во временную папку Windows
+  /// и запускает установщик.
+  ///
+  /// Закрытием самого приложения этот сервис НЕ занимается.
+  /// Это остаётся ответственностью main.dart.
+  static Future<void> downloadAndLaunchInstaller({
+    required String downloadUrl,
+    required String version,
+    void Function(double progress)? onProgress,
+  }) async {
+    final client = HttpClient();
+    IOSink? sink;
+
+    try {
+      final request = await client.getUrl(
+        Uri.parse(downloadUrl),
+      );
+
+      request.headers.set(
+        'User-Agent',
+        'Tverskoy-RO-Updater',
+      );
+
+      final response = await request.close();
+
+      if (response.statusCode != HttpStatus.ok) {
+        throw HttpException(
+          'Не удалось скачать обновление: '
+          'HTTP ${response.statusCode}',
+        );
+      }
+
+      final safeVersion = version.replaceAll(
+        RegExp(r'[^0-9A-Za-z._-]'),
+        '_',
+      );
+
+      final installerFile = File(
+        '${Directory.systemTemp.path}'
+        '\\Tverskoy_RO_Setup_$safeVersion.exe',
+      );
+
+      sink = installerFile.openWrite();
+
+      final totalBytes = response.contentLength;
+      int receivedBytes = 0;
+
+      await for (final chunk in response) {
+        sink.add(chunk);
+        receivedBytes += chunk.length;
+
+        if (totalBytes > 0) {
+          onProgress?.call(
+            receivedBytes / totalBytes,
+          );
+        }
+      }
+
+      await sink.flush();
+      await sink.close();
+      sink = null;
+
+      onProgress?.call(1);
+
+      await Process.start(
+        installerFile.path,
+        const [
+          '/SP-',
+          '/CLOSEAPPLICATIONS',
+          '/RESTARTAPPLICATIONS',
+        ],
+        mode: ProcessStartMode.detached,
+      );
+    } finally {
+      try {
+        await sink?.close();
+      } catch (_) {}
+
+      client.close(force: true);
+    }
+  }
 }
