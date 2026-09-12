@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'models/law_models.dart';
+import 'services/storage_service.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -671,19 +672,22 @@ Future<void> _loadRoRules() async {
 // ИЗБРАННОЕ — ЗАГРУЗКА И СОХРАНЕНИЕ
 // ==========================================================
 
-/// Загружает избранные статьи/правила из SharedPreferences.
+/// Загружает избранные статьи/правила из пользовательского хранилища.
 Future<void> _loadFavorites() async {
-  final prefs = await SharedPreferences.getInstance();
-  final savedIds = prefs.getStringList('favorite_article_ids') ?? <String>[];
+  final savedIds = await StorageService.loadFavoriteArticleIds();
 
   if (!mounted) return;
 
   setState(() {
-    _favoriteArticleIds = savedIds.toSet();
+    _favoriteArticleIds = savedIds;
   });
 }
 
 /// Добавляет или убирает статью/правило из избранного.
+///
+/// Само сохранение теперь выполняет StorageService.
+/// Благодаря этому main.dart больше не знает,
+/// как именно пользовательские данные хранятся на диске.
 Future<void> _toggleFavorite(LawArticle article) async {
   setState(() {
     if (_favoriteArticleIds.contains(article.id)) {
@@ -693,10 +697,8 @@ Future<void> _toggleFavorite(LawArticle article) async {
     }
   });
 
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setStringList(
-    'favorite_article_ids',
-    _favoriteArticleIds.toList(),
+  await StorageService.saveFavoriteArticleIds(
+    _favoriteArticleIds,
   );
 }
 
