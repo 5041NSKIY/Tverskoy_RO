@@ -468,8 +468,6 @@ Future<void> _downloadAndInstallUpdate() async {
 
 /// СОХРАНЯЕТ ТЕКУЩИЙ НЕДЕЛЬНЫЙ ОТЧЁТ.
 Future<void> _saveWeeklyReport() async {
-  final prefs = await SharedPreferences.getInstance();
-
   List<String> values(
     List<TextEditingController> controllers,
   ) {
@@ -478,44 +476,15 @@ Future<void> _saveWeeklyReport() async {
         .toList();
   }
 
-  await prefs.setString(
-    'weekly_report_tag',
-    _weeklyReportTagController.text,
-  );
-
-  await prefs.setString(
-    'weekly_report_date_from',
-    _weeklyReportDateFromController.text,
-  );
-
-  await prefs.setString(
-    'weekly_report_date_to',
-    _weeklyReportDateToController.text,
-  );
-
-  await prefs.setStringList(
-    'weekly_report_accepted',
-    values(_weeklyReportAcceptedControllers),
-  );
-
-  await prefs.setStringList(
-    'weekly_report_dismissed',
-    values(_weeklyReportDismissedControllers),
-  );
-
-  await prefs.setStringList(
-    'weekly_report_promoted',
-    values(_weeklyReportPromotedControllers),
-  );
-
-  await prefs.setStringList(
-    'weekly_report_gov_wave',
-    values(_weeklyReportGovWaveControllers),
-  );
-
-  await prefs.setStringList(
-    'weekly_report_exams',
-    values(_weeklyReportExamsControllers),
+  await StorageService.saveWeeklyReport(
+    tag: _weeklyReportTagController.text,
+    dateFrom: _weeklyReportDateFromController.text,
+    dateTo: _weeklyReportDateToController.text,
+    accepted: values(_weeklyReportAcceptedControllers),
+    dismissed: values(_weeklyReportDismissedControllers),
+    promoted: values(_weeklyReportPromotedControllers),
+    govWave: values(_weeklyReportGovWaveControllers),
+    exams: values(_weeklyReportExamsControllers),
   );
 }
 // ==========================================================
@@ -704,16 +673,16 @@ Future<void> _toggleFavorite(LawArticle article) async {
 
 /// ЗАГРУЖАЕТ СОХРАНЁННЫЙ НЕДЕЛЬНЫЙ ОТЧЁТ ПРИ СТАРТЕ.
 Future<void> _loadWeeklyReport() async {
-  final prefs = await SharedPreferences.getInstance();
+  final data = await StorageService.loadWeeklyReport();
 
   _weeklyReportTagController.text =
-      prefs.getString('weekly_report_tag') ?? '';
+      data['tag'] as String;
 
   _weeklyReportDateFromController.text =
-      prefs.getString('weekly_report_date_from') ?? '';
+      data['dateFrom'] as String;
 
   _weeklyReportDateToController.text =
-      prefs.getString('weekly_report_date_to') ?? '';
+      data['dateTo'] as String;
 
   void restoreControllers(
     List<TextEditingController> controllers,
@@ -736,27 +705,27 @@ Future<void> _loadWeeklyReport() async {
 
   restoreControllers(
     _weeklyReportAcceptedControllers,
-    prefs.getStringList('weekly_report_accepted') ?? [],
+    List<String>.from(data['accepted'] as List),
   );
 
   restoreControllers(
     _weeklyReportDismissedControllers,
-    prefs.getStringList('weekly_report_dismissed') ?? [],
+    List<String>.from(data['dismissed'] as List),
   );
 
   restoreControllers(
     _weeklyReportPromotedControllers,
-    prefs.getStringList('weekly_report_promoted') ?? [],
+    List<String>.from(data['promoted'] as List),
   );
 
   restoreControllers(
     _weeklyReportGovWaveControllers,
-    prefs.getStringList('weekly_report_gov_wave') ?? [],
+    List<String>.from(data['govWave'] as List),
   );
 
   restoreControllers(
     _weeklyReportExamsControllers,
-    prefs.getStringList('weekly_report_exams') ?? [],
+    List<String>.from(data['exams'] as List),
   );
 
   if (!mounted) return;
