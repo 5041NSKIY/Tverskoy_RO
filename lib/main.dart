@@ -12,6 +12,7 @@ import 'services/hotkey_service.dart';
 import 'services/data_service.dart';
 import 'widgets/common_widgets.dart';
 import 'screens/laws_screen.dart';
+import 'screens/rules_screen.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -1475,35 +1476,8 @@ Widget _buildSearchPage() {
 /// 1. Общие правила проекта
 /// 2. Правила государственных организаций
 Widget _buildRulesPage() {
-  return ListView(
-    padding: const EdgeInsets.all(24),
-    children: [
-      const Text(
-        'Правила Россия Онлайн',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-
-      const SizedBox(height: 20),
-
-      DocumentTile(
-        shortName: 'ОПП',
-        title: 'Общие правила проекта',
-        onTap: () {
-          _openDocument('Общие правила проекта');
-        },
-      ),
-
-      DocumentTile(
-        shortName: 'ПГО',
-        title: 'Правила государственных организаций',
-        onTap: () {
-          _openDocument('Правила государственных организаций');
-        },
-      ),
-    ],
+  return RulesScreen(
+    onOpenDocument: _openDocument,
   );
 }
   /// ОДНА КАРТОЧКА ФРАКЦИИ В РАЗДЕЛЕ «ПАМЯТКИ».
