@@ -18,6 +18,7 @@ import 'screens/favorites_screen.dart';
 import 'screens/document_screen.dart';
 import 'screens/search_screen.dart';
 import 'widgets/article_widgets.dart';
+import 'services/article_copy_service.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -3935,51 +3936,32 @@ onScrollCompleted: () {
   // ==========================================================
 
   /// КОПИРУЕТ СТАТЬЮ ИЛИ ПУНКТ ПРАВИЛ ЦЕЛИКОМ.
-  Future<void> _copyWholeArticle(LawArticle article) async {
-    final isRoRule =
-        article.document == 'Общие правила проекта' ||
-        article.document == 'Правила государственных организаций';
+  Future<void> _copyWholeArticle(
+  LawArticle article,
+) async {
+  await ArticleCopyService.copyWholeArticle(
+    article,
+  );
 
-    await Clipboard.setData(
-      ClipboardData(
-        text: [
-          isRoRule
-              ? '${article.documentShortName} п. ${article.number}'
-              : article.title.trim().isEmpty
-                  ? '${article.documentShortName} Ст. ${article.number}'
-                  : '${article.documentShortName} Ст. ${article.number} — ${article.title}',
-          ...article.parts.map(
-            (part) => isRoRule
-                ? part.text
-                : 'ч. ${part.number} — ${part.text}',
-          ),
-        ].join('\n'),
-      ),
-    );
-
-    _showCopied('${article.id}_all');
-  }
+  _showCopied(
+    '${article.id}_all',
+  );
+}
 
   /// КОПИРУЕТ ТОЛЬКО ОДНУ ЧАСТЬ СТАТЬИ / ТЕКСТ ПУНКТА ПРАВИЛ.
   Future<void> _copyArticlePart(
-    LawArticle article,
-    LawArticlePart part,
-  ) async {
-    final isRoRule =
-        article.document == 'Общие правила проекта' ||
-        article.document == 'Правила государственных организаций';
+  LawArticle article,
+  LawArticlePart part,
+) async {
+  await ArticleCopyService.copyArticlePart(
+    article,
+    part,
+  );
 
-    await Clipboard.setData(
-      ClipboardData(
-        text: isRoRule
-            ? '${article.documentShortName} п. ${article.number} — ${part.text}'
-            : '${article.documentShortName} Ст. ${article.number} — ${article.title} '
-                'ч. ${part.number} — ${part.text}',
-      ),
-    );
-
-    _showCopied('${article.id}_${part.number}');
-  }
+  _showCopied(
+    '${article.id}_${part.number}',
+  );
+}
 
   /// ПОКАЗЫВАЕТ "✓ СКОПИРОВАНО" НА 1 СЕКУНДУ.
   void _showCopied(String copiedId) {
