@@ -20,6 +20,7 @@ import 'screens/search_screen.dart';
 import 'widgets/article_widgets.dart';
 import 'services/article_copy_service.dart';
 import 'widgets/top_bar.dart';
+import 'widgets/app_sidebar.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -651,88 +652,37 @@ Future<void> _loadWeeklyReport() async {
 
   /// ЭТОТ РАЗДЕЛ ОТВЕЧАЕТ ЗА КНОПКИ СЛЕВА.
   Widget _buildSidebar() {
-    return Container(
-      width: 220,
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.18),
-        border: Border(
-          right: BorderSide(
-            color: Colors.white.withValues(alpha: 0.06),
-          ),
-        ),
-      ),
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SidebarButton(
-            icon: Icons.home_outlined,
-            title: 'Главная',
-            selected: _selectedPage == 0,
-            onTap: () {
-              _openPage(0);
-            },
-          ),
+  return AppSidebar(
+    selectedPage: _selectedPage,
+    appVersion: appVersion,
 
-          SidebarButton(
-            icon: Icons.menu_book_outlined,
-            title: 'Законы',
-            selected: _selectedPage == 1,
-            onTap: () {
-              _openPage(1, closeDocument: true);
-            },
-          ),
+    onHome: () {
+      _openPage(0);
+    },
 
-          SidebarButton(
-            icon: Icons.sports_esports_outlined,
-            title: 'Правила RO',
-            selected: _selectedPage == 2,
-            onTap: () {
-              _openPage(2, closeDocument: true);
-            },
-          ),
-          SidebarButton(
-            icon: Icons.assignment_outlined,
-            title: 'Памятки',
-            selected: _selectedPage == 3,
-            onTap: () {
-               _openPage(3);
-            },
-          ),
+    onLaws: () {
+      _openPage(
+        1,
+        closeDocument: true,
+      );
+    },
 
-          SidebarButton(
-            icon: Icons.star_border,
-            title: 'Избранное',
-            selected: _selectedPage == 4,
-            onTap: () {
-              _openPage(4);
-            },
-          ),
+    onRules: () {
+      _openPage(
+        2,
+        closeDocument: true,
+      );
+    },
 
-          const Spacer(),
+    onMemos: () {
+      _openPage(3);
+    },
 
-          Text(
-            'v$appVersion',
-            style: const TextStyle(
-              color: Colors.white38,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          const Text(
-            'Ctrl + 1 — показать / скрыть',
-            style: TextStyle(
-              color: Colors.white54,
-              fontSize: 11,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    onFavorites: () {
+      _openPage(4);
+    },
+  );
+}
 
   /// ВСПОМОГАТЕЛЬНАЯ ХУЙНЯ ДЛЯ ЛЕВОГО МЕНЮ.
   /// Чтобы не писать один и тот же setState для каждой кнопки.
