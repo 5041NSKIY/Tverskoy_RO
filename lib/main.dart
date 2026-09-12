@@ -19,6 +19,7 @@ import 'screens/document_screen.dart';
 import 'screens/search_screen.dart';
 import 'widgets/article_widgets.dart';
 import 'services/article_copy_service.dart';
+import 'widgets/top_bar.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -608,142 +609,41 @@ Future<void> _loadWeeklyReport() async {
   /// ЭТОТ РАЗДЕЛ ОТВЕЧАЕТ ЗА ВЕРХНЮЮ ПАНЕЛЬ:
   /// логотип, строку поиска, прозрачность, X и кнопку питания.
   Widget _buildTopBar() {
-    return Container(
-      height: 68,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      child: Row(
-        children: [
-          // ----------------------------------------------------
-          // Перетаскивание окна мышкой за левую часть шапки.
-          // ----------------------------------------------------
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onPanStart: (_) async {
-              await windowManager.startDragging();
-            },
-            child: const SizedBox(
-              width: 185,
-              height: 68,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.balance,
-                    size: 28,
-                  ),
-                  SizedBox(width: 10),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Tverskoy RO',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'by 5041nskiy',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.white54,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+  return TopBar(
+    opacity: _opacity,
 
-          const SizedBox(width: 10),
+    onSearchChanged: (value) {
+      setState(() {
+        _searchQuery = value;
+      });
+    },
 
-          // ----------------------------------------------------
-          // ПОИСК.
-          // Пока это только поле ввода.
-          // Реальную логику поиска добавим отдельно.
-          // ----------------------------------------------------
-          Expanded(
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Поиск: ст. 2, УК ст. 51, задержание...',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white.withValues(alpha: 0.06),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-            ),
-          ),
+    onOpacityChanged: (value) {
+      setState(() {
+        _opacity = value;
+      });
+    },
+    onOpacityChangeEnd: (value) {
+  setState(() {
+    _opacity = value;
+  });
+},
 
-          const SizedBox(width: 14),
+    onStartDragging: () {
+      windowManager.startDragging();
+    },
 
-          // ----------------------------------------------------
-          // ПРОЗРАЧНОСТЬ ОКНА.
-          // ----------------------------------------------------
-          const Icon(Icons.opacity),
+    onHide: () {
+      windowManager.hide();
+      _overlayVisible = false;
+    },
 
-          SizedBox(
-            width: 110,
-            child: Slider(
-              value: _opacity,
-              min: 0.55,
-              max: 1,
-              onChanged: (value) {
-                setState(() {
-                  _opacity = value;
-                });
-              },
-            ),
-          ),
-
-          Text(
-            '${(_opacity * 100).round()}%',
-            style: const TextStyle(fontSize: 12),
-          ),
-
-          const SizedBox(width: 6),
-
-          // ----------------------------------------------------
-          // X — только скрывает окно.
-          // Приложение продолжает работать в фоне.
-          // ----------------------------------------------------
-          IconButton(
-            tooltip: 'Скрыть оверлей',
-            onPressed: () async {
-              await windowManager.hide();
-              _overlayVisible = false;
-            },
-            icon: const Icon(Icons.close),
-          ),
-
-          // ----------------------------------------------------
-          // КНОПКА ПИТАНИЯ — полностью закрывает приложение.
-          // ----------------------------------------------------
-          IconButton(
-            tooltip: 'Закрыть приложение',
-            onPressed: () async {
-              await HotkeyService.unregisterToggleOverlay();
-              await windowManager.close();
-            },
-            icon: const Icon(
-              Icons.power_settings_new,
-              size: 20,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    onClose: () async {
+      await HotkeyService.unregisterToggleOverlay();
+      await windowManager.close();
+    },
+  );
+}
 
   // ==========================================================
   // ЛЕВОЕ МЕНЮ
