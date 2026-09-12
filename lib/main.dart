@@ -11,6 +11,7 @@ import 'services/window_service.dart';
 import 'services/hotkey_service.dart';
 import 'services/data_service.dart';
 import 'widgets/common_widgets.dart';
+import 'screens/laws_screen.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -1449,104 +1450,10 @@ Widget _buildSearchPage() {
   /// ЭТОТ РАЗДЕЛ ОТВЕЧАЕТ ЗА КАРТОЧКИ:
   /// УК, УПК, Конституция, ПДД и т.д.
   Widget _buildLawsPage() {
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        const Text(
-          'Законодательство РО',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        DocumentTile(
-          shortName: 'УПК',
-          title: 'Уголовно-процессуальный кодекс РО',
-          onTap: () {
-            _openDocument('Уголовно-процессуальный кодекс РО');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'УК',
-          title: 'Уголовный кодекс РО',
-          onTap: () {
-            _openDocument('Уголовный кодекс РО');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'КР',
-          title: 'Конституция РО',
-          onTap: () {
-            _openDocument('Конституция РО');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'ПДД',
-          title: 'Правила дорожного движения РО',
-          onTap: () {
-            _openDocument('ПДД РО');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'КоАП',
-          title: 'Кодекс об административных правонарушениях РО',
-          onTap: () {
-            _openDocument('КоАП РО');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'ФЗ',
-          title: 'ФЗ «О полиции»',
-          onTap: () {
-            _openDocument('ФЗ «О полиции»');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'ФЗ',
-          title: 'ФЗ «Об оперативно-розыскной деятельности»',
-          onTap: () {
-            _openDocument('ФЗ «Об оперативно-розыскной деятельности»');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'ТК',
-          title: 'Трудовой кодекс РО',
-          onTap: () {
-            _openDocument('Трудовой кодекс РО');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'ФКЗ',
-          title: 'ФКЗ «О Правительстве»',
-          onTap: () {
-            _openDocument('ФКЗ «О Правительстве»');
-          },
-        ),
-
-        DocumentTile(
-          shortName: 'МСК',
-          title:
-              'Закон города Москвы «О регулировании статуса государственной собственности и территорий»',
-          onTap: () {
-            _openDocument(
-              'Закон города Москвы «О регулировании статуса государственной собственности и территорий»',
-            );
-          },
-        ),
-      ],
-    );
-  }
+  return LawsScreen(
+    onOpenDocument: _openDocument,
+  );
+}
 
   /// ОТКРЫВАЕТ КОНКРЕТНЫЙ ЗАКОН.
   void _openDocument(String documentName) {
