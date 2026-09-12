@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "Tverskoy RO"
-#define MyAppVersion "0.1.0 beta"
+#define MyAppVersion "0.1.1 beta"
 #define MyAppPublisher "5041NSKIY"
 #define MyAppURL "https://github.com/5041NSKIY/Tverskoy_RO"
 #define MyAppExeName "majestic_law.exe"
@@ -37,7 +37,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=E:\development\majestic_law\installer_output
-OutputBaseFilename=Tverskoy_RO_Setup_v0.1.0-beta
+OutputBaseFilename=Tverskoy_RO_Setup_v0.1.1-beta
 SetupIconFile=E:\development\majestic_law\575abab0-0940-4175-8feb-6bc0452b6e37-converted.ico
 SolidCompression=yes
 WizardStyle=modern dark windows11

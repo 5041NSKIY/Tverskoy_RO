@@ -57,3 +57,5 @@ lib/main4 (2).dart
 assets/laws.json
 assets/laws2.json
 assets/laws3.json
+# Inno Setup build output
+installer_output/
