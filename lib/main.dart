@@ -16,6 +16,7 @@ import 'screens/rules_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/document_screen.dart';
+import 'screens/search_screen.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -881,242 +882,29 @@ Future<void> _loadWeeklyReport() async {
 // ==========================================================
 // ПОИСК
 // ==========================================================
-/// ПРИВОДИТ ПОИСКОВЫЙ ЗАПРОС К НОРМАЛЬНОМУ ВИДУ.
-///
-/// Например:
-/// "Ст. 2"     -> "ст 2"
-/// "ст.2"      -> "ст 2"
-/// "статья 2"  -> "ст 2"
-String _normalizeSearchQuery(String value) {
-  return value
-      .toLowerCase()
-      .replaceAll('статья', 'ст')
-      .replaceAll('ст.', 'ст')
-      .replaceAll('пункт', 'п')
-      .replaceAll('п.', 'п')
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .trim();
-}
-/// ПЫТАЕТСЯ ПОНЯТЬ, КАКОЙ ДОКУМЕНТ УКАЗАН В ПОИСКЕ.
-///
-/// Например:
-/// "ук ст 2"   -> "УК"
-/// "упк 46"    -> "УПК"
-/// "коап 5"    -> "КоАП"
-String? _detectDocumentShortName(String query) {
-  final normalized = _normalizeSearchQuery(query);
 
-  const documents = [
-    'ук',
-    'упк',
-    'коап',
-    'тк',
-    'пдд',
-    'кр',
-    'фкз',
-    'мск',
-    'опп',
-    'пго',
-  ];
-
-  for (final document in documents) {
-    if (RegExp(r'(^|\s)' + RegExp.escape(document) + r'(\s|$)')
-        .hasMatch(normalized)) {
-      return document;
-    }
-  }
-
-  return null;
-}
-/// ВЫТАСКИВАЕТ ТОЧНЫЙ НОМЕР СТАТЬИ ИЗ ЗАПРОСА.
-///
-/// Понимает:
-/// "ст 2"       -> "2"
-/// "ук ст 51"   -> "51"
-/// "статья 50.1" -> "50.1"
-///
-/// А если указан документ, понимает короткую запись:
-/// "ук 51"      -> "51"
-/// "упк 46"     -> "46"
-/// "коап 5"     -> "5"
-///
-/// Просто "51" специально НЕ считаем точной статьёй.
-/// Такой запрос пока остаётся обычным широким поиском.
-String? _detectArticleNumber(String query) {
-  final normalized = _normalizeSearchQuery(query);
-
-  // Обычная запись: "ст 51", "ук ст 51" и т.д.
-  final articleMatch = RegExp(
-    r'(?:^|\s)(?:ст|п)\s*(\d+(?:\.\d+)*)(?:\s|$)',
-  ).firstMatch(normalized);
-
-  if (articleMatch != null) {
-    return articleMatch.group(1);
-  }
-
-  // Короткая запись работает только вместе с названием документа:
-  // "ук 51", "упк 46", "коап 5".
-  final document = _detectDocumentShortName(normalized);
-
-  if (document != null) {
-    final shortMatch = RegExp(
-      r'(?:^|\s)' +
-          RegExp.escape(document) +
-          r'\s+(\d+(?:\.\d+)*)(?:\s|$)',
-    ).firstMatch(normalized);
-
-    if (shortMatch != null) {
-      return shortMatch.group(1);
-    }
-  }
-
-  return null;
-}
-/// УБИРАЕТ ИЗ ЗАПРОСА СЛУЖЕБНЫЕ ЧАСТИ.
-///
-/// Примеры:
-/// "ук задержание"    -> "задержание"
-/// "ук ст 2"          -> ""
-/// "ст 2 задержание"  -> "задержание"
-/// "ук 51"            -> ""
-String _buildTextSearchQuery(String query) {
-  var normalized = _normalizeSearchQuery(query);
-
-  final detectedDocument =
-      _detectDocumentShortName(normalized);
-
-  final detectedArticleNumber =
-      _detectArticleNumber(normalized);
-
-  if (detectedDocument != null) {
-    normalized = normalized.replaceAll(
-      RegExp(
-        r'(^|\s)' +
-            RegExp.escape(detectedDocument) +
-            r'(?=\s|$)',
-      ),
-      ' ',
-    );
-  }
-
-  if (detectedArticleNumber != null) {
-    normalized = normalized.replaceAll(
-      RegExp(
-        r'(^|\s)(?:ст|п)\s*' +
-            RegExp.escape(detectedArticleNumber) +
-            r'(?=\s|$)',
-      ),
-      ' ',
-    );
-
-    normalized = normalized.replaceAll(
-      RegExp(
-        r'(^|\s)' +
-            RegExp.escape(detectedArticleNumber) +
-            r'(?=\s|$)',
-      ),
-      ' ',
-    );
-  }
-
-  return normalized
-      .replaceAll(RegExp(r'\s+'), ' ')
-      .trim();
-}
 /// ЭТОТ РАЗДЕЛ ОТВЕЧАЕТ ЗА СТРАНИЦУ РЕЗУЛЬТАТОВ ПОИСКА.
 ///
 /// Пока здесь только каркас.
 /// Следующим шагом добавим реальную фильтрацию по статьям и тексту.
 Widget _buildSearchPage() {
-  final query = _normalizeSearchQuery(_searchQuery);
-  final detectedDocument = _detectDocumentShortName(query);
-  final detectedArticleNumber = _detectArticleNumber(query);
-  final textQuery = _buildTextSearchQuery(query);
-  final searchSource = _selectedPage == 2
-      ? _roRules
-      : _articles;
+  final searchSource =
+      _selectedPage == 2
+          ? _roRules
+          : _articles;
 
-  final results = searchSource.where((article) {
-    if (detectedArticleNumber != null &&
-    article.number != detectedArticleNumber) {
-  return false;
-}
-    if (detectedDocument != null &&
-    article.documentShortName.toLowerCase() != detectedDocument) {
-  return false;
-}
-  final searchableText = _normalizeSearchQuery(
-  [
-    article.document,
-    article.documentShortName,
-    'ст ${article.number}',
-    article.title,
-    article.section,
-    article.chapter,
-    ...article.parts.map((part) => part.text),
-  ].join(' '),
-);
-
-  // Если после удаления "УК", "ст 2" и т.д.
-// текста не осталось — фильтров документа/номера уже достаточно.
-  if (textQuery.isEmpty) {
-  return true;
-}
-
-// Если текст остался — ищем уже только его.
-  return searchableText.contains(textQuery);
-}).toList();
-  return ListView(
-    padding: const EdgeInsets.all(24),
-    children: [
-      const Text(
-        'Результаты поиска',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-
-      const SizedBox(height: 8),
-
-      Text(
-        'Запрос: $_searchQuery',
-        style: const TextStyle(
-          color: Colors.white70,
-          fontSize: 14,
-        ),
-      ),
-
-      const SizedBox(height: 20),
-
-      if (results.isEmpty)
-      const Text(
-    'Ничего не найдено.',
-    style: TextStyle(
-      color: Colors.white54,
-      fontSize: 14,
-    ),
-  )
-      else ...[
-  Text(
-    'Найдено: ${results.length}',
-    style: const TextStyle(
-      color: Colors.white54,
-      fontSize: 14,
-    ),
-  ),
-
-  const SizedBox(height: 12),
-
-  for (final article in results)
-  _buildArticleTile(
-    article,
-    fromSearch: true,
-  ),
-],
-    ],
+  return SearchScreen(
+    searchQuery: _searchQuery,
+    articles: searchSource,
+    articleBuilder: (article) {
+      return _buildArticleTile(
+        article,
+        fromSearch: true,
+      );
+    },
   );
 }
+   
 
   // ==========================================================
   // ГЛАВНАЯ
