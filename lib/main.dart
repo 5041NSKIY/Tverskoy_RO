@@ -7,50 +7,11 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'models/law_models.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
-// ============================================================
-// МОДЕЛИ ДАННЫХ
-// ============================================================
 
-/// Одна статья закона.
-///
-/// Здесь хранится всё, что приходит из laws.json:
-/// документ, номер статьи, название, раздел, глава и части статьи.
-class LawArticle {
-  final String id;
-  final String document;
-  final String documentShortName;
-  final String number;
-  final String title;
-  final String section;
-  final String chapter;
-  final List<LawArticlePart> parts;
-
-  const LawArticle({
-    required this.id,
-    required this.document,
-    required this.documentShortName,
-    required this.number,
-    required this.title,
-    required this.section,
-    required this.chapter,
-    required this.parts,
-  });
-}
-
-/// Одна часть статьи: "ч. 1", "ч. 2" и т.д.
-class LawArticlePart {
-  final String number;
-  final String text;
-
-  const LawArticlePart({
-    required this.number,
-    required this.text,
-  });
-}
 
 // ============================================================
 // ЗАПУСК ПРИЛОЖЕНИЯ
@@ -5208,21 +5169,24 @@ class SidebarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 6),
-      decoration: BoxDecoration(
-        color: selected
-            ? Colors.white.withValues(alpha: 0.08)
-            : Colors.transparent,
+    return Padding(
+  padding: const EdgeInsets.only(bottom: 6),
+  child: Material(
+    color: selected
+        ? Colors.white.withValues(alpha: 0.08)
+        : Colors.transparent,
+    borderRadius: BorderRadius.circular(8),
+    child: ListTile(
+      dense: true,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
-      child: ListTile(
-        dense: true,
-        leading: Icon(icon, size: 20),
-        title: Text(title),
-        onTap: onTap,
-      ),
-    );
+      leading: Icon(icon, size: 20),
+      title: Text(title),
+      onTap: onTap,
+    ),
+  ),
+);
   }
 }
 
