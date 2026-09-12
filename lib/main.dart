@@ -13,6 +13,7 @@ import 'services/data_service.dart';
 import 'widgets/common_widgets.dart';
 import 'screens/laws_screen.dart';
 import 'screens/rules_screen.dart';
+import 'screens/home_screen.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -1118,331 +1119,51 @@ Widget _buildSearchPage() {
   // ==========================================================
   // ГЛАВНАЯ
   // ==========================================================
+Widget _buildHomePage() {
+  return HomeScreen(
+    appVersion: appVersion,
 
-  Widget _buildHomePage() {
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        const Text(
-          'Tverskoy RO',
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
+    lawsCount: _articles.length,
+    rulesCount: _roRules.length,
 
-        const SizedBox(height: 6),
+    availableUpdateVersion: _availableUpdateVersion,
+    updateStatus: _updateStatus,
 
-        const Text(
-          'Быстрый справочник по законодательству, правилам и рабочим памяткам.',
-          style: TextStyle(
-            color: Colors.white54,
-            fontSize: 14,
-            height: 1.4,
-          ),
-        ),
+    checkingForUpdate: _checkingForUpdate,
+    downloadingUpdate: _downloadingUpdate,
 
-        const SizedBox(height: 10),
+    updateProgress: _updateProgress,
 
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08),
-              ),
-            ),
-            child: Text(
-              'Версия $appVersion',
-              style: const TextStyle(
-                color: Colors.white60,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
+    onOpenLaws: () {
+      _openPage(
+        1,
+        closeDocument: true,
+      );
+    },
 
-        const SizedBox(height: 12),
+    onOpenRules: () {
+      _openPage(
+        2,
+        closeDocument: true,
+      );
+    },
 
-        // ------------------------------------------------------
-        // СТАТУС ОБНОВЛЕНИЯ.
-        // ------------------------------------------------------
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: _availableUpdateVersion != null
-                ? Colors.deepPurpleAccent.withValues(alpha: 0.10)
-                : Colors.white.withValues(alpha: 0.035),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: _availableUpdateVersion != null
-                  ? Colors.deepPurpleAccent.withValues(alpha: 0.35)
-                  : Colors.white.withValues(alpha: 0.07),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    _availableUpdateVersion != null
-                        ? Icons.system_update_alt
-                        : Icons.verified_outlined,
-                    size: 19,
-                    color: _availableUpdateVersion != null
-                        ? Colors.deepPurpleAccent
-                        : Colors.white54,
-                  ),
-                  const SizedBox(width: 9),
-                  Expanded(
-                    child: Text(
-                      _checkingForUpdate
-                          ? 'Проверяем обновления...'
-                          : (_updateStatus ?? 'Автообновление включено'),
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: _availableUpdateVersion != null
-                            ? Colors.white
-                            : Colors.white60,
-                      ),
-                    ),
-                  ),
-                  if (_availableUpdateVersion != null)
-                    FilledButton.icon(
-                      onPressed: _downloadingUpdate
-                          ? null
-                          : _downloadAndInstallUpdate,
-                      icon: const Icon(Icons.download, size: 17),
-                      label: Text(
-                        _downloadingUpdate ? 'Скачиваем...' : 'Обновить',
-                      ),
-                    )
-                  else
-                    TextButton(
-                      onPressed: _checkingForUpdate
-                          ? null
-                          : () => _checkForUpdates(manual: true),
-                      child: const Text('Проверить'),
-                    ),
-                ],
-              ),
-              if (_downloadingUpdate && _updateProgress != null) ...[
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: _updateProgress,
-                  minHeight: 5,
-                  borderRadius: BorderRadius.circular(99),
-                ),
-              ],
-            ],
-          ),
-        ),
+    onOpenMemos: () {
+      _openPage(3);
+    },
 
-        const SizedBox(height: 18),
+    onCheckUpdates: () {
+      _checkForUpdates(
+        manual: true,
+      );
+    },
 
-        Row(
-          children: [
-            Expanded(
-              child: _buildHomeQuickCard(
-                icon: Icons.menu_book_outlined,
-                title: 'Законы',
-                subtitle: 'Кодексы, ФЗ и нормативные акты',
-                value: '${_articles.length}',
-                valueLabel: 'статей',
-                onTap: () {
-                  _openPage(1, closeDocument: true);
-                },
-              ),
-            ),
+    onInstallUpdate: _downloadAndInstallUpdate,
+  );
+}
+  
 
-            const SizedBox(width: 12),
-
-            Expanded(
-              child: _buildHomeQuickCard(
-                icon: Icons.sports_esports_outlined,
-                title: 'Правила RO',
-                subtitle: 'ОПП и правила гос. организаций',
-                value: '${_roRules.length}',
-                valueLabel: 'пунктов',
-                onTap: () {
-                  _openPage(2, closeDocument: true);
-                },
-              ),
-            ),
-
-            const SizedBox(width: 12),
-
-            Expanded(
-              child: _buildHomeQuickCard(
-                icon: Icons.assignment_outlined,
-                title: 'Памятки',
-                subtitle: 'Фракции, отделы и рабочие шаблоны',
-                value: '7',
-                valueLabel: 'фракций',
-                onTap: () {
-                  _openPage(3);
-                },
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 22),
-
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.035),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.08),
-            ),
-          ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.search, size: 20, color: Colors.white70),
-                  SizedBox(width: 8),
-                  Text(
-                    'Быстрый поиск',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Примеры: «УК ст. 51», «ПГО 1.1», «задержание».\n'
-                'Поиск работает по номеру статьи или пункта и по тексту.',
-                style: TextStyle(
-                  color: Colors.white60,
-                  fontSize: 13,
-                  height: 1.5,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.025),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.06),
-            ),
-          ),
-          child: const Row(
-            children: [
-              Icon(Icons.keyboard_outlined, size: 20, color: Colors.white54),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Ctrl + 1 — мгновенно показать или скрыть оверлей.',
-                  style: TextStyle(
-                    color: Colors.white54,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Карточка быстрого перехода на главной странице.
-  Widget _buildHomeQuickCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required String value,
-    required String valueLabel,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        height: 165,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.045),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.08),
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 36,
-                  height: 36,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Icon(icon, size: 20),
-                ),
-                const Spacer(),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: Colors.white38,
-                ),
-              ],
-            ),
-            const Spacer(),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 12,
-                height: 1.3,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '$value $valueLabel',
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  
 
   // ==========================================================
   // СПИСОК ЗАКОНОВ
