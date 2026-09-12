@@ -15,6 +15,7 @@ import 'screens/laws_screen.dart';
 import 'screens/rules_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/favorites_screen.dart';
+import 'screens/document_screen.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -4008,148 +4009,33 @@ const SizedBox(height: 10),
   ///
   /// Поэтому больше не нужны lastSection / lastChapter и вся та хуета,
   /// которая раньше печатала раздел перед каждой статьёй.
-  Widget _buildDocumentPage(String documentName) {
-    final sourceArticles = _selectedPage == 2
-    ? _roRules
-    : _articles;
+  Widget _buildDocumentPage(
+  String documentName,
+) {
+  final isRulesDocument =
+      _selectedPage == 2;
 
-    final documentArticles = sourceArticles
-    .where((article) => article.document == documentName)
-    .toList();
+  return DocumentScreen(
+    documentName: documentName,
 
-    final groupedArticles = _groupArticles(documentArticles);
+    articles: isRulesDocument
+        ? _roRules
+        : _articles,
 
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        // ------------------------------------------------------
-        // Кнопка "Назад к списку законов".
-        // ------------------------------------------------------
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton.icon(
-            onPressed: () {
-              setState(() {
-                _selectedDocument = null;
-                _expandedArticle = null;
-              });
-            },
-            icon: const Icon(Icons.arrow_back, size: 18),
-            label: Text(
-  _selectedPage == 2
-      ? 'Назад к списку правил'
-      : 'Назад к списку законов',
-),
-          ),
-        ),
+    isRulesDocument: isRulesDocument,
 
-        const SizedBox(height: 8),
+    onBack: () {
+      setState(() {
+        _selectedDocument = null;
+        _expandedArticle = null;
+      });
+    },
 
-        // ------------------------------------------------------
-        // Название открытого документа.
-        // ------------------------------------------------------
-        Text(
-          documentName,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-
-        const SizedBox(height: 20),
-
-        // ------------------------------------------------------
-        // Если в JSON для этого документа пока нет статей.
-        // ------------------------------------------------------
-        if (documentArticles.isEmpty)
-          const Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Text(
-              'В этом документе пока нет загруженных статей.',
-              style: TextStyle(
-                color: Colors.white54,
-                fontSize: 14,
-              ),
-            ),
-          ),
-
-        // ------------------------------------------------------
-        // РАЗДЕЛ -> ГЛАВА -> СТАТЬИ.
-        // ------------------------------------------------------
-        for (final sectionEntry in groupedArticles.entries) ...[
-          if (sectionEntry.key.isNotEmpty)
-            _buildSectionHeader(sectionEntry.key),
-
-          for (final chapterEntry in sectionEntry.value.entries) ...[
-            if (chapterEntry.key.isNotEmpty)
-              _buildChapterHeader(chapterEntry.key),
-
-            for (final article in chapterEntry.value)
-              _buildArticleTile(article),
-          ],
-        ],
-      ],
-    );
-  }
-
-  /// ЭТА ХУЙНЯ ГРУППИРУЕТ СТАТЬИ:
-  /// сначала по разделу, потом по главе.
-  ///
-  /// Это обычная подготовка данных ДО рисования интерфейса.
-  Map<String, Map<String, List<LawArticle>>> _groupArticles(
-    List<LawArticle> articles,
-  ) {
-    final grouped = <String, Map<String, List<LawArticle>>>{};
-
-    for (final article in articles) {
-      final section = article.section.trim();
-      final chapter = article.chapter.trim();
-
-      grouped.putIfAbsent(
-        section,
-        () => <String, List<LawArticle>>{},
-      );
-
-      grouped[section]!.putIfAbsent(
-        chapter,
-        () => <LawArticle>[],
-      );
-
-      grouped[section]![chapter]!.add(article);
-    }
-
-    return grouped;
-  }
-
-  /// РИСУЕТ КРУПНЫЙ ЗАГОЛОВОК РАЗДЕЛА.
-  Widget _buildSectionHeader(String section) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 24, 8, 10),
-      child: Text(
-        section,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w800,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
-  /// РИСУЕТ ЗАГОЛОВОК ГЛАВЫ.
-  Widget _buildChapterHeader(String chapter) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 10, 8, 6),
-      child: Text(
-        chapter,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-          color: Colors.white70,
-        ),
-      ),
-    );
-  }
+    articleBuilder: (article) {
+      return _buildArticleTile(article);
+    },
+  );
+}
 
   // ==========================================================
   // ОДНА СТАТЬЯ
