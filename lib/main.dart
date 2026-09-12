@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -9,6 +9,7 @@ import 'services/storage_service.dart';
 import 'services/update_service.dart';
 import 'services/window_service.dart';
 import 'services/hotkey_service.dart';
+import 'services/data_service.dart';
 /// Текущая версия приложения.
 const String appVersion = '0.1.1 beta';
 
@@ -402,35 +403,15 @@ for (final controller in _weeklyReportExamsControllers) {
   /// ЭТА ХУЙНЯ ЧИТАЕТ assets/data/laws.json
   /// И ПРЕВРАЩАЕТ JSON В НОРМАЛЬНЫЕ ОБЪЕКТЫ LawArticle.
   Future<void> _loadArticles() async {
-    final jsonString =
-        await rootBundle.loadString('assets/data/laws.json');
+  final loadedArticles =
+      await DataService.loadLaws();
 
-    final List<dynamic> jsonData = json.decode(jsonString);
+  if (!mounted) return;
 
-    final loadedArticles = jsonData.map((item) {
-      return LawArticle(
-        id: item['id'],
-        document: item['document'],
-        documentShortName: item['documentShortName'],
-        number: item['number'],
-        title: item['title'],
-        section: item['section'] ?? '',
-        chapter: item['chapter'] ?? '',
-        parts: (item['parts'] as List<dynamic>).map((part) {
-          return LawArticlePart(
-            number: part['number'],
-            text: part['text'],
-          );
-        }).toList(),
-      );
-    }).toList();
-
-    if (!mounted) return;
-
-    setState(() {
-      _articles = loadedArticles;
-    });
-  }
+  setState(() {
+    _articles = loadedArticles;
+  });
+}
   // ==========================================================
 // ЗАГРУЗКА ПРАВИЛ RO ИЗ JSON
 // ==========================================================
@@ -438,28 +419,8 @@ for (final controller in _weeklyReportExamsControllers) {
 /// ЭТА ХУЙНЯ ЧИТАЕТ assets/data/ro_rules.json
 /// И ПРЕВРАЩАЕТ ПРАВИЛА В ТЕ ЖЕ ОБЪЕКТЫ LawArticle.
 Future<void> _loadRoRules() async {
-  final jsonString =
-      await rootBundle.loadString('assets/data/ro_rules.json');
-
-  final List<dynamic> jsonData = json.decode(jsonString);
-
-  final loadedRules = jsonData.map((item) {
-    return LawArticle(
-      id: item['id'],
-      document: item['document'],
-      documentShortName: item['documentShortName'],
-      number: item['number'],
-      title: item['title'],
-      section: item['section'] ?? '',
-      chapter: item['chapter'] ?? '',
-      parts: (item['parts'] as List<dynamic>).map((part) {
-        return LawArticlePart(
-          number: part['number'],
-          text: part['text'],
-        );
-      }).toList(),
-    );
-  }).toList();
+  final loadedRules =
+      await DataService.loadRoRules();
 
   if (!mounted) return;
 
