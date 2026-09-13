@@ -229,4 +229,29 @@ static Future<void> saveWindowSize({
     height,
   );
 }
+// ============================================================
+// ЦВЕТ ТЕКСТА
+// ============================================================
+
+static const String _textColorKey =
+    'settings_text_color';
+
+static Future<int?> loadTextColor() async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  return prefs.getInt(_textColorKey);
+}
+
+static Future<void> saveTextColor(
+  int value,
+) async {
+  final prefs =
+      await SharedPreferences.getInstance();
+
+  await prefs.setInt(
+    _textColorKey,
+    value,
+  );
+}
 }

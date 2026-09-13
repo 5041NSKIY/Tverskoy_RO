@@ -12,7 +12,9 @@ class SettingsScreen extends StatefulWidget {
   final ValueChanged<double> onTextScaleChanged;
 
   final Color accentColor;
+  final Color textColor;
   final ValueChanged<Color> onAccentColorChanged;
+  final ValueChanged<Color> onTextColorChanged;
 
   final HotkeyConfig hotkeyConfig;
 
@@ -30,6 +32,8 @@ class SettingsScreen extends StatefulWidget {
     required this.onAccentColorChanged,
     required this.hotkeyConfig,
     required this.onHotkeyChanged,
+    required this.textColor,
+    required this.onTextColorChanged,
   });
 
   @override
@@ -383,6 +387,133 @@ class _SettingsScreenState
 
           const SizedBox(height: 16),
 
+          const SizedBox(height: 16),
+
+// ======================================================
+// ЦВЕТ ТЕКСТА
+// ======================================================
+
+Container(
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: Colors.white24,
+    ),
+    borderRadius:
+        BorderRadius.circular(10),
+  ),
+  child: Column(
+    crossAxisAlignment:
+        CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Цвет текста',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight:
+              FontWeight.w700,
+        ),
+      ),
+
+      const SizedBox(height: 6),
+
+      const Text(
+        'Выберите основной цвет текста.',
+        style: TextStyle(
+          color: Colors.white54,
+          fontSize: 13,
+        ),
+      ),
+
+      const SizedBox(height: 16),
+
+      Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          _TextColorButton(
+            color: const Color(
+              0xFFFFFFFF,
+            ),
+            selected:
+                widget.textColor ==
+                const Color(
+                  0xFFFFFFFF,
+                ),
+            onTap:
+                widget.onTextColorChanged,
+          ),
+
+          _TextColorButton(
+            color: const Color(
+              0xFFE0E0E0,
+            ),
+            selected:
+                widget.textColor ==
+                const Color(
+                  0xFFE0E0E0,
+                ),
+            onTap:
+                widget.onTextColorChanged,
+          ),
+
+          _TextColorButton(
+            color: const Color(
+              0xFFBDBDBD,
+            ),
+            selected:
+                widget.textColor ==
+                const Color(
+                  0xFFBDBDBD,
+                ),
+            onTap:
+                widget.onTextColorChanged,
+          ),
+
+          _TextColorButton(
+            color: const Color(
+              0xFF8A8A8A,
+            ),
+            selected:
+                widget.textColor ==
+                const Color(
+                  0xFF8A8A8A,
+                ),
+            onTap:
+                widget.onTextColorChanged,
+          ),
+
+          _TextColorButton(
+            color: const Color(
+              0xFF555555,
+            ),
+            selected:
+                widget.textColor ==
+                const Color(
+                  0xFF555555,
+                ),
+            onTap:
+                widget.onTextColorChanged,
+          ),
+
+          _TextColorButton(
+            color: const Color(
+              0xFF000000,
+            ),
+            selected:
+                widget.textColor ==
+                const Color(
+                  0xFF000000,
+                ),
+            onTap:
+                widget.onTextColorChanged,
+          ),
+        ],
+      ),
+    ],
+  ),
+),
+
           // ======================================================
           // ГЛОБАЛЬНЫЙ ХОТКЕЙ
           // ======================================================
@@ -562,4 +693,59 @@ class _AccentColorButton
       ),
     );
   }
+  }
+  // ============================================================
+// КНОПКА ВЫБОРА ЦВЕТА ТЕКСТА
+// ============================================================
+
+class _TextColorButton
+    extends StatelessWidget {
+  final Color color;
+  final bool selected;
+
+  final ValueChanged<Color> onTap;
+
+  const _TextColorButton({
+    required this.color,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onTap(color);
+      },
+      borderRadius:
+          BorderRadius.circular(100),
+      child: Container(
+        width: 38,
+        height: 38,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: selected
+                ? Theme.of(context)
+                    .colorScheme
+                    .primary
+                : Colors.white24,
+            width: selected ? 3 : 1,
+          ),
+        ),
+        child: selected
+            ? Icon(
+                Icons.check,
+                size: 19,
+                color: color.computeLuminance() >
+                        0.5
+                    ? Colors.black87
+                    : Colors.white,
+              )
+            : null,
+      ),
+    );
+  }
 }
+

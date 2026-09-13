@@ -108,12 +108,18 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: availableUpdateVersion != null
-                ? Colors.deepPurpleAccent.withValues(alpha: 0.10)
+                ? Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.10)
                 : Colors.white.withValues(alpha: 0.035),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: availableUpdateVersion != null
-                  ? Colors.deepPurpleAccent.withValues(alpha: 0.35)
+                  ? Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withValues(alpha: 0.35)
                   : Colors.white.withValues(alpha: 0.07),
             ),
           ),
@@ -128,7 +134,7 @@ class HomeScreen extends StatelessWidget {
                         : Icons.verified_outlined,
                     size: 19,
                     color: availableUpdateVersion != null
-                        ? Colors.deepPurpleAccent
+                        ? Theme.of(context).colorScheme.primary
                         : Colors.white54,
                   ),
 
@@ -342,13 +348,17 @@ Widget build(BuildContext context) {
                   height: 36,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 20,
-                  ),
+  color: Theme.of(context)
+      .colorScheme
+      .primary
+      .withValues(alpha: 0.12),
+  borderRadius: BorderRadius.circular(9),
+),
+child: Icon(
+  icon,
+  size: 20,
+  color: Theme.of(context).colorScheme.primary,
+),
                 ),
 
                 const Spacer(),

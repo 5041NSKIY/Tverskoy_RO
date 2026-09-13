@@ -69,6 +69,8 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Основной цвет интерфейса.
   Color _accentColor =
     const Color(0xFFCDB4FF);
+  Color _textColor =
+    const Color(0xFFFFFFFF);
 
   /// Текущий глобальный хоткей показа / скрытия оверлея.
   HotkeyConfig _hotkeyConfig =
@@ -150,9 +152,13 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
     _loadFavorites();
 
     _loadTextScale();
+
+    _loadTextColor();
     Future<void> _loadAccentColor() async {
   final savedValue =
       await StorageService.loadAccentColor();
+
+      
 
   if (!mounted) return;
 
@@ -164,11 +170,23 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
     _accentColor = Color(savedValue);
   });
 }
-    _loadAccentColor();
+     _loadAccentColor();
 
     /// Проверяем GitHub Releases после запуска приложения.
     _checkForUpdates();
   }
+   Future<void> _loadTextColor() async {
+  final savedColor =
+      await StorageService.loadTextColor();
+
+  if (savedColor == null || !mounted) {
+    return;
+  }
+
+  setState(() {
+    _textColor = Color(savedColor);
+  });
+}
 // ==========================================================
 // АВТООБНОВЛЕНИЕ ЧЕРЕЗ GITHUB RELEASES
 // ==========================================================
@@ -438,10 +456,17 @@ Future<void> _registerHotKey() async {
   brightness: Brightness.dark,
 
   colorScheme: ColorScheme.fromSeed(
-    seedColor: _accentColor,
-    brightness: Brightness.dark,
-  ),
-
+  seedColor: _accentColor,
+  brightness: Brightness.dark,
+).copyWith(
+  onSurface: _textColor,
+),
+textTheme: ThemeData.dark()
+    .textTheme
+    .apply(
+      bodyColor: _textColor,
+      displayColor: _textColor,
+    ),
   sliderTheme: SliderThemeData(
     activeTrackColor: _accentColor,
     thumbColor: _accentColor,
@@ -453,7 +478,10 @@ Future<void> _registerHotKey() async {
           opacity: _opacity,
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF111318),
+              color: Color.alphaBlend(
+  _accentColor.withValues(alpha: 0.07),
+  const Color(0xFF111318),
+),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.08),
@@ -635,6 +663,16 @@ Future<void> _registerHotKey() async {
               color.toARGB32(),
             );
           },
+          textColor: _textColor,
+          onTextColorChanged: (color) {
+  setState(() {
+    _textColor = color;
+  });
+
+  StorageService.saveTextColor(
+    color.toARGB32(),
+  );
+},
 
           hotkeyConfig: _hotkeyConfig,
 
@@ -651,6 +689,7 @@ Future<void> _registerHotKey() async {
               _hotkeyConfig = config;
             });
           },
+          
         );
 
       default:
