@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../services/hotkey_service.dart';
 
@@ -48,6 +49,50 @@ class _SettingsScreenState
   bool _capturingHotkey = false;
   bool _savingHotkey = false;
   String? _hotkeyError;
+
+
+  // ============================================================
+  // ПОДДЕРЖКА / ОБРАТНАЯ СВЯЗЬ
+  // ============================================================
+
+  static final Uri _bugReportUri = Uri.parse(
+    'https://forms.yandex.ru/u/6aa66bda902902af46a96254',
+  );
+
+  static final Uri _developerDiscordUri = Uri.parse(
+    'discord://-/users/675810737876107284',
+  );
+
+  static final Uri _developerDiscordWebUri = Uri.parse(
+    'https://discord.com/users/675810737876107284',
+  );
+
+  /// Открывает Яндекс Форму для баг-репорта.
+  Future<void> _openBugReport() async {
+    await launchUrl(
+      _bugReportUri,
+      mode: LaunchMode.externalApplication,
+    );
+  }
+
+  /// Сначала пытается открыть профиль разработчика в Discord.
+  /// Если Discord не установлен / deep link не сработал —
+  /// открывает веб-профиль в браузере.
+  Future<void> _openDeveloperContact() async {
+    final openedInDiscord = await launchUrl(
+      _developerDiscordUri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (openedInDiscord) {
+      return;
+    }
+
+    await launchUrl(
+      _developerDiscordWebUri,
+      mode: LaunchMode.externalApplication,
+    );
+  }
 
   @override
   void dispose() {
@@ -528,6 +573,73 @@ Container(
     ],
   ),
 ),
+
+          // ======================================================
+          // ПОДДЕРЖКА
+          // ======================================================
+
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.white24,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Поддержка',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+
+                const SizedBox(height: 6),
+
+                Text(
+                  'Сообщить об ошибке или связаться с разработчиком.',
+                  style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.54),
+                    fontSize: 13,
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                OutlinedButton.icon(
+                  onPressed: _openBugReport,
+                  icon: const Icon(
+                    Icons.bug_report_outlined,
+                    size: 18,
+                  ),
+                  label: const Text(
+                    'Сообщить об ошибке',
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                OutlinedButton.icon(
+                  onPressed: _openDeveloperContact,
+                  icon: const Icon(
+                    Icons.discord,
+                    size: 18,
+                  ),
+                  label: const Text(
+                    'Связаться с разработчиком',
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
 
           // ======================================================
           // ГЛОБАЛЬНЫЙ ХОТКЕЙ
