@@ -5,21 +5,52 @@ import 'dart:io';
 // СЕРВИС ОБНОВЛЕНИЙ
 // ============================================================
 
-/// Результат проверки обновлений.
-///
-/// Если [version] и [downloadUrl] равны null,
-/// значит более новой версии нет.
+enum UpdateSeverity {
+  normal,
+  important,
+  critical,
+}
+
+/// Информация об одном GitHub Release.
+class UpdateReleaseInfo {
+  final String version;
+  final String changelog;
+  final UpdateSeverity severity;
+
+  const UpdateReleaseInfo({
+    required this.version,
+    required this.changelog,
+    required this.severity,
+  });
+}
+
+/// Полный результат проверки обновлений.
 class UpdateCheckResult {
   final String? version;
   final String? downloadUrl;
 
+  /// Информация о версии, которая установлена сейчас.
+  final UpdateReleaseInfo? currentRelease;
+
+  /// Все опубликованные версии новее текущей.
+  /// Список идёт от самой новой к самой старой.
+  final List<UpdateReleaseInfo> newerReleases;
+
+  /// Максимальная важность среди пропущенных обновлений.
+  final UpdateSeverity severity;
+
   const UpdateCheckResult({
     this.version,
     this.downloadUrl,
+    this.currentRelease,
+    this.newerReleases = const [],
+    this.severity = UpdateSeverity.normal,
   });
 
   bool get hasUpdate =>
       version != null && downloadUrl != null;
+
+  int get missedUpdatesCount => newerReleases.length;
 }
 
 /// Отвечает за работу с GitHub Releases.
@@ -39,12 +70,6 @@ class UpdateService {
   // СРАВНЕНИЕ ВЕРСИЙ
   // ==========================================================
 
-  /// Превращает:
-  /// v0.1.2-beta
-  /// 0.1.2 beta
-  ///
-  /// в:
-  /// [0, 1, 2]
   static List<int> _versionNumbers(String value) {
     final match =
         RegExp(r'(\d+)\.(\d+)\.(\d+)').firstMatch(value);
@@ -60,39 +85,165 @@ class UpdateService {
     ];
   }
 
-  /// true, если candidate новее current.
+  /// Чем больше число — тем "новее" канал при одинаковых цифрах.
+  static int _releaseStageRank(String value) {
+    final lower = value.toLowerCase();
+
+    if (lower.contains('alpha')) return 1;
+    if (lower.contains('beta')) return 2;
+    if (lower.contains('rc')) return 3;
+
+    return 4;
+  }
+
+  static int _compareVersions(
+    String a,
+    String b,
+  ) {
+    final aNumbers = _versionNumbers(a);
+    final bNumbers = _versionNumbers(b);
+
+    for (int i = 0; i < 3; i++) {
+      if (aNumbers[i] > bNumbers[i]) return 1;
+      if (aNumbers[i] < bNumbers[i]) return -1;
+    }
+
+    final aRank = _releaseStageRank(a);
+    final bRank = _releaseStageRank(b);
+
+    if (aRank > bRank) return 1;
+    if (aRank < bRank) return -1;
+
+    return 0;
+  }
+
   static bool _isVersionNewer(
     String candidate,
     String current,
   ) {
-    final a = _versionNumbers(candidate);
-    final b = _versionNumbers(current);
+    return _compareVersions(candidate, current) > 0;
+  }
 
-    for (int i = 0; i < 3; i++) {
-      if (a[i] > b[i]) return true;
-      if (a[i] < b[i]) return false;
+  static bool _isSameVersion(
+    String a,
+    String b,
+  ) {
+    return _compareVersions(a, b) == 0;
+  }
+
+  // ==========================================================
+  // ВАЖНОСТЬ И CHANGELOG
+  // ==========================================================
+
+  static UpdateSeverity _severityFromBody(
+    String body,
+  ) {
+    final upper = body.toUpperCase();
+
+    if (upper.contains('[CRITICAL]')) {
+      return UpdateSeverity.critical;
     }
 
-    // При одинаковых цифрах стабильный релиз
-    // считаем новее beta / alpha / rc.
-    final candidateLower = candidate.toLowerCase();
-    final currentLower = current.toLowerCase();
+    if (upper.contains('[IMPORTANT]')) {
+      return UpdateSeverity.important;
+    }
 
-    bool isPreRelease(String value) =>
-        value.contains('beta') ||
-        value.contains('alpha') ||
-        value.contains('rc');
+    return UpdateSeverity.normal;
+  }
 
-    return isPreRelease(currentLower) &&
-        !isPreRelease(candidateLower);
+  static UpdateSeverity _maxSeverity(
+    Iterable<UpdateReleaseInfo> releases,
+  ) {
+    var result = UpdateSeverity.normal;
+
+    for (final release in releases) {
+      if (release.severity == UpdateSeverity.critical) {
+        return UpdateSeverity.critical;
+      }
+
+      if (release.severity == UpdateSeverity.important) {
+        result = UpdateSeverity.important;
+      }
+    }
+
+    return result;
+  }
+
+  /// Маркеры нужны сервису, пользователю их показывать не надо.
+  static String _cleanChangelog(
+    String body,
+  ) {
+    final cleaned = body
+        .replaceAll(
+          RegExp(
+            r'\[(NORMAL|IMPORTANT|CRITICAL)\]',
+            caseSensitive: false,
+          ),
+          '',
+        )
+        .trim();
+
+    if (cleaned.isEmpty) {
+      return 'Для этой версии описание изменений не указано.';
+    }
+
+    return cleaned;
+  }
+
+  static UpdateReleaseInfo _releaseInfo(
+    Map<String, dynamic> release,
+  ) {
+    final tag =
+        (release['tag_name'] ?? '').toString();
+
+    final body =
+        (release['body'] ?? '').toString();
+
+    return UpdateReleaseInfo(
+      version: tag,
+      changelog: _cleanChangelog(body),
+      severity: _severityFromBody(body),
+    );
+  }
+
+  // ==========================================================
+  // УСТАНОВЩИК
+  // ==========================================================
+
+  static Map<dynamic, dynamic>? _findInstallerAsset(
+    Map<String, dynamic> release,
+  ) {
+    final assets = release['assets'];
+
+    if (assets is! List) {
+      return null;
+    }
+
+    for (final asset in assets) {
+      if (asset is! Map) {
+        continue;
+      }
+
+      final name =
+          (asset['name'] ?? '')
+              .toString()
+              .toLowerCase();
+
+      if (name.startsWith(
+            'tverskoy_ro_setup_',
+          ) &&
+          name.endsWith('.exe')) {
+        return asset;
+      }
+    }
+
+    return null;
   }
 
   // ==========================================================
   // ПРОВЕРКА GITHUB RELEASES
   // ==========================================================
 
-  /// Ищет самый новый опубликованный релиз,
-  /// содержащий установщик Tverskoy RO.
   static Future<UpdateCheckResult> checkForUpdate({
     required String currentVersion,
   }) async {
@@ -129,12 +280,18 @@ class UpdateService {
       final body =
           await response.transform(utf8.decoder).join();
 
-      final List<dynamic> releases =
-          json.decode(body);
+      final decoded = json.decode(body);
 
-      Map<String, dynamic>? newestRelease;
+      if (decoded is! List) {
+        throw const FormatException(
+          'GitHub вернул неожиданный формат списка релизов.',
+        );
+      }
 
-      for (final rawRelease in releases) {
+      final publishedReleases =
+          <Map<String, dynamic>>[];
+
+      for (final rawRelease in decoded) {
         if (rawRelease is! Map<String, dynamic>) {
           continue;
         }
@@ -150,80 +307,84 @@ class UpdateService {
           continue;
         }
 
-        final assets = rawRelease['assets'];
+        publishedReleases.add(rawRelease);
+      }
 
-        if (assets is! List) {
-          continue;
-        }
+      // --------------------------------------------------------
+      // CHANGELOG ТЕКУЩЕЙ ВЕРСИИ
+      // --------------------------------------------------------
 
-        final hasInstaller = assets.any((asset) {
-          if (asset is! Map) {
-            return false;
-          }
+      UpdateReleaseInfo? currentRelease;
 
-          final name =
-              (asset['name'] ?? '')
-                  .toString()
-                  .toLowerCase();
+      for (final release in publishedReleases) {
+        final tag =
+            (release['tag_name'] ?? '').toString();
 
-          return name.startsWith(
-                'tverskoy_ro_setup_',
-              ) &&
-              name.endsWith('.exe');
-        });
-
-        if (!hasInstaller) {
-          continue;
-        }
-
-        if (newestRelease == null ||
-            _isVersionNewer(
-              tag,
-              (newestRelease['tag_name'] ?? '')
-                  .toString(),
-            )) {
-          newestRelease = rawRelease;
+        if (_isSameVersion(tag, currentVersion)) {
+          currentRelease = _releaseInfo(release);
+          break;
         }
       }
 
-      if (newestRelease == null) {
-        return const UpdateCheckResult();
+      // --------------------------------------------------------
+      // ВСЕ ПРОПУЩЕННЫЕ ОБНОВЛЕНИЯ
+      // --------------------------------------------------------
+
+      final newerReleaseMaps =
+          <Map<String, dynamic>>[];
+
+      for (final release in publishedReleases) {
+        final tag =
+            (release['tag_name'] ?? '').toString();
+
+        if (!_isVersionNewer(
+          tag,
+          currentVersion,
+        )) {
+          continue;
+        }
+
+        // Если для релиза нет Setup EXE,
+        // он не считается устанавливаемым обновлением.
+        if (_findInstallerAsset(release) == null) {
+          continue;
+        }
+
+        newerReleaseMaps.add(release);
       }
+
+      newerReleaseMaps.sort(
+        (a, b) {
+          final aTag =
+              (a['tag_name'] ?? '').toString();
+          final bTag =
+              (b['tag_name'] ?? '').toString();
+
+          // Новые версии сверху.
+          return -_compareVersions(aTag, bTag);
+        },
+      );
+
+      final newerReleases = newerReleaseMaps
+          .map(_releaseInfo)
+          .toList(growable: false);
+
+      if (newerReleaseMaps.isEmpty) {
+        return UpdateCheckResult(
+          currentRelease: currentRelease,
+        );
+      }
+
+      // Самый новый релиз всегда первый после сортировки.
+      final newestRelease =
+          newerReleaseMaps.first;
 
       final newestTag =
           (newestRelease['tag_name'] ?? '')
               .toString();
 
-      if (!_isVersionNewer(
-        newestTag,
-        currentVersion,
-      )) {
-        return const UpdateCheckResult();
-      }
-
-      final assets =
-          newestRelease['assets'] as List<dynamic>;
-
-      Map<dynamic, dynamic>? installerAsset;
-
-      for (final asset in assets) {
-        if (asset is! Map) {
-          continue;
-        }
-
-        final name =
-            (asset['name'] ?? '')
-                .toString()
-                .toLowerCase();
-
-        if (name.startsWith(
-              'tverskoy_ro_setup_',
-            ) &&
-            name.endsWith('.exe')) {
-          installerAsset = asset;
-          break;
-        }
-      }
+      final installerAsset =
+          _findInstallerAsset(newestRelease);
 
       final downloadUrl =
           (installerAsset?['browser_download_url'] ?? '')
@@ -231,19 +392,23 @@ class UpdateService {
 
       if (downloadUrl.isEmpty) {
         throw const FormatException(
-          'В релизе нет ссылки на Setup EXE.',
+          'В новом релизе нет ссылки на Setup EXE.',
         );
       }
 
       return UpdateCheckResult(
         version: newestTag,
         downloadUrl: downloadUrl,
+        currentRelease: currentRelease,
+        newerReleases: newerReleases,
+        severity: _maxSeverity(newerReleases),
       );
     } finally {
       client.close(force: true);
     }
   }
-    // ==========================================================
+
+  // ==========================================================
   // СКАЧИВАНИЕ И ЗАПУСК ОБНОВЛЕНИЯ
   // ==========================================================
 

@@ -20,7 +20,7 @@ import 'widgets/top_bar.dart';
 import 'widgets/app_sidebar.dart';
 import 'screens/settings_screen.dart';
 /// Текущая версия приложения.
-const String appVersion = '0.1.1 beta';
+const String appVersion = '0.1.2 beta';
 
 
 
@@ -127,6 +127,17 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Короткий статус для главной страницы.
   String? _updateStatus;
 
+  /// Changelog установленной версии.
+  UpdateReleaseInfo? _currentReleaseInfo;
+
+  /// Все версии, которые пользователь пропустил.
+  List<UpdateReleaseInfo> _newerReleases =
+      <UpdateReleaseInfo>[];
+
+  /// Максимальная важность среди пропущенных версий.
+  UpdateSeverity _updateSeverity =
+      UpdateSeverity.normal;
+
   /// Прогресс скачивания от 0 до 1. null = GitHub не сообщил размер файла.
   double? _updateProgress;
 
@@ -218,26 +229,38 @@ Future<void> _checkForUpdates({
 
     if (!mounted) return;
 
-    if (!result.hasUpdate) {
-      setState(() {
+    setState(() {
+      _currentReleaseInfo =
+          result.currentRelease;
+
+      _newerReleases =
+          result.newerReleases;
+
+      _updateSeverity =
+          result.severity;
+
+      if (!result.hasUpdate) {
         _availableUpdateVersion = null;
         _updateDownloadUrl = null;
         _updateStatus =
             'Установлена актуальная версия.';
-      });
+        return;
+      }
 
-      return;
-    }
-
-    setState(() {
       _availableUpdateVersion =
           result.version;
 
       _updateDownloadUrl =
           result.downloadUrl;
 
-      _updateStatus =
-          'Доступно обновление ${result.version}';
+      if (result.missedUpdatesCount > 1) {
+        _updateStatus =
+            'Доступно ${result.missedUpdatesCount} обновления · '
+            'последнее ${result.version}';
+      } else {
+        _updateStatus =
+            'Доступно обновление ${result.version}';
+      }
     });
   } catch (error) {
     if (!mounted) return;
@@ -737,6 +760,10 @@ Widget _buildHomePage() {
 
     availableUpdateVersion: _availableUpdateVersion,
     updateStatus: _updateStatus,
+
+    currentRelease: _currentReleaseInfo,
+    newerReleases: _newerReleases,
+    updateSeverity: _updateSeverity,
 
     checkingForUpdate: _checkingForUpdate,
     downloadingUpdate: _downloadingUpdate,
