@@ -30,7 +30,7 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback onInstallUpdate;
   
 
-  const HomeScreen({
+  HomeScreen({
     super.key,
     required this.appVersion,
     required this.lawsCount,
@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Text(
+        Text(
           'Tverskoy RO',
           style: TextStyle(
             fontSize: 28,
@@ -61,18 +61,18 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 6),
+        SizedBox(height: 6),
 
-        const Text(
+        Text(
           'Быстрый справочник по законодательству, правилам и рабочим памяткам.',
           style: TextStyle(
-            color: Colors.white54,
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
             fontSize: 14,
             height: 1.4,
           ),
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         Align(
           alignment: Alignment.centerLeft,
@@ -90,8 +90,8 @@ class HomeScreen extends StatelessWidget {
             ),
             child: Text(
               'Версия $appVersion',
-              style: const TextStyle(
-                color: Colors.white60,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.60),
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
@@ -99,7 +99,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
 
         // ------------------------------------------------------
         // СТАТУС ОБНОВЛЕНИЯ
@@ -135,10 +135,10 @@ class HomeScreen extends StatelessWidget {
                     size: 19,
                     color: availableUpdateVersion != null
                         ? Theme.of(context).colorScheme.primary
-                        : Colors.white54,
+                        : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
                   ),
 
-                  const SizedBox(width: 9),
+                  SizedBox(width: 9),
 
                   Expanded(
                     child: Text(
@@ -150,8 +150,8 @@ class HomeScreen extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: availableUpdateVersion != null
-                            ? Colors.white
-                            : Colors.white60,
+                            ? Theme.of(context).textTheme.bodyMedium!.color!
+                            : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.60),
                       ),
                     ),
                   ),
@@ -161,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                       onPressed: downloadingUpdate
                           ? null
                           : onInstallUpdate,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.download,
                         size: 17,
                       ),
@@ -175,14 +175,14 @@ class HomeScreen extends StatelessWidget {
                     TextButton(
                       onPressed:
                           checkingForUpdate ? null : onCheckUpdates,
-                      child: const Text('Проверить'),
+                      child: Text('Проверить'),
                     ),
                 ],
               ),
 
               if (downloadingUpdate &&
                   updateProgress != null) ...[
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 LinearProgressIndicator(
                   value: updateProgress,
                   minHeight: 5,
@@ -193,7 +193,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 18),
+        SizedBox(height: 18),
 
         Row(
           children: [
@@ -208,7 +208,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
 
             Expanded(
               child: _HomeQuickCard(
@@ -221,7 +221,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: 12),
+            SizedBox(width: 12),
 
             Expanded(
               child: _HomeQuickCard(
@@ -236,7 +236,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 22),
+        SizedBox(height: 22),
 
         Container(
           padding: const EdgeInsets.all(18),
@@ -247,7 +247,7 @@ class HomeScreen extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.08),
             ),
           ),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -255,7 +255,7 @@ class HomeScreen extends StatelessWidget {
                   Icon(
                     Icons.search,
                     size: 20,
-                    color: Colors.white70,
+                    color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
                   ),
                   SizedBox(width: 8),
                   Text(
@@ -274,7 +274,7 @@ class HomeScreen extends StatelessWidget {
                 'Примеры: «УК ст. 51», «ПГО 1.1», «задержание».\n'
                 'Поиск работает по номеру статьи или пункта и по тексту.',
                 style: TextStyle(
-                  color: Colors.white60,
+                  color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.60),
                   fontSize: 13,
                   height: 1.5,
                 ),
@@ -283,7 +283,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
 
         
       ],
@@ -361,45 +361,45 @@ child: Icon(
 ),
                 ),
 
-                const Spacer(),
+                Spacer(),
 
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
                   size: 14,
-                  color: Colors.white38,
+                  color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.38),
                 ),
               ],
             ),
 
-            const Spacer(),
+            Spacer(),
 
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
             ),
 
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
 
             Text(
               subtitle,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white54,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
                 fontSize: 12,
                 height: 1.3,
               ),
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
 
             Text(
               '$value $valueLabel',
-              style: const TextStyle(
-                color: Colors.white70,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),

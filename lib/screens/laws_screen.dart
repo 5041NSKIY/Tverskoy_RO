@@ -14,7 +14,7 @@ import '../widgets/common_widgets.dart';
 class LawsScreen extends StatelessWidget {
   final void Function(String documentName) onOpenDocument;
 
-  const LawsScreen({
+  LawsScreen({
     super.key,
     required this.onOpenDocument,
   });
@@ -24,7 +24,7 @@ class LawsScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Text(
+        Text(
           'Законодательство РО',
           style: TextStyle(
             fontSize: 24,
@@ -32,7 +32,7 @@ class LawsScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         DocumentTile(
           shortName: 'УПК',

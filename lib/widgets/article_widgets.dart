@@ -119,10 +119,10 @@ class ArticleTile extends StatelessWidget {
                       overflow:
                           TextOverflow.ellipsis,
                       style:
-                          const TextStyle(
+                          TextStyle(
                         fontSize: 13,
                         height: 1.35,
-                        color: Colors.white54,
+                        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
                       ),
                     ),
                   )
@@ -146,7 +146,7 @@ class ArticleTile extends StatelessWidget {
                     size: 19,
                     color: isFavorite
                         ? Colors.amberAccent
-                        : Colors.white54,
+                        : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
                   ),
                   onPressed:
                       onToggleFavorite,
@@ -192,7 +192,7 @@ class ArticleTile extends StatelessWidget {
                       ? Icons.expand_less
                       : Icons.expand_more,
                   size: 20,
-                  color: Colors.white70,
+                  color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
                 ),
               ],
             ),
@@ -303,7 +303,7 @@ class _ArticlePart extends StatelessWidget {
                     isRoRule ? 14 : 15,
                 height:
                     isRoRule ? 1.4 : 1.5,
-                color: Colors.white70,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
               ),
             ),
           ),

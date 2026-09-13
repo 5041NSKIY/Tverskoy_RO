@@ -95,14 +95,14 @@ class DocumentTile extends StatelessWidget {
 
         /// Стрелка только если карточка нажимается.
         trailing: onTap != null
-            ? const Icon(
+            ? Icon(
                 Icons.chevron_right,
-                color: Colors.white38,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.38),
               )
-            : const Icon(
+            : Icon(
                 Icons.lock_outline,
                 size: 17,
-                color: Colors.white24,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.24),
               ),
       ),
     );

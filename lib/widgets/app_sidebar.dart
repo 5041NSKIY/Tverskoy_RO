@@ -98,8 +98,8 @@ class AppSidebar extends StatelessWidget {
 
           Text(
             'v$appVersion',
-            style: const TextStyle(
-              color: Colors.white38,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.38),
               fontSize: 11,
               fontWeight: FontWeight.w600,
             ),
@@ -109,8 +109,8 @@ class AppSidebar extends StatelessWidget {
 
           Text(
   '$hotkeyLabel — показать / скрыть',
-  style: const TextStyle(
-    color: Colors.white54,
+  style: TextStyle(
+    color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
     fontSize: 11,
   ),
 ),

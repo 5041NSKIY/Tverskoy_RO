@@ -23,7 +23,7 @@ class DocumentScreen extends StatelessWidget {
   final VoidCallback onBack;
   final Widget Function(LawArticle article) articleBuilder;
 
-  const DocumentScreen({
+  DocumentScreen({
     super.key,
     required this.documentName,
     required this.articles,
@@ -57,7 +57,7 @@ class DocumentScreen extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
             onPressed: onBack,
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back,
               size: 18,
             ),
@@ -69,31 +69,31 @@ class DocumentScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
 
         // ------------------------------------------------------
         // НАЗВАНИЕ ДОКУМЕНТА
         // ------------------------------------------------------
         Text(
           documentName,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         // ------------------------------------------------------
         // ДОКУМЕНТ ПОКА ПУСТ
         // ------------------------------------------------------
         if (documentArticles.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(top: 16),
             child: Text(
               'В этом документе пока нет загруженных статей.',
               style: TextStyle(
-                color: Colors.white54,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
                 fontSize: 14,
               ),
             ),
@@ -106,6 +106,7 @@ class DocumentScreen extends StatelessWidget {
             in groupedArticles.entries) ...[
           if (sectionEntry.key.isNotEmpty)
             _buildSectionHeader(
+              context,
               sectionEntry.key,
             ),
 
@@ -113,6 +114,7 @@ class DocumentScreen extends StatelessWidget {
               in sectionEntry.value.entries) ...[
             if (chapterEntry.key.isNotEmpty)
               _buildChapterHeader(
+                context,
                 chapterEntry.key,
               ),
 
@@ -169,6 +171,7 @@ class DocumentScreen extends StatelessWidget {
   // ==========================================================
 
   Widget _buildSectionHeader(
+    BuildContext context,
     String section,
   ) {
     return Padding(
@@ -176,10 +179,10 @@ class DocumentScreen extends StatelessWidget {
           const EdgeInsets.fromLTRB(8, 24, 8, 10),
       child: Text(
         section,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w800,
-          color: Colors.white,
+          color: Theme.of(context).textTheme.bodyMedium!.color!,
         ),
       ),
     );
@@ -190,6 +193,7 @@ class DocumentScreen extends StatelessWidget {
   // ==========================================================
 
   Widget _buildChapterHeader(
+    BuildContext context,
     String chapter,
   ) {
     return Padding(
@@ -197,10 +201,10 @@ class DocumentScreen extends StatelessWidget {
           const EdgeInsets.fromLTRB(8, 10, 8, 6),
       child: Text(
         chapter,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w700,
-          color: Colors.white70,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
         ),
       ),
     );
@@ -256,7 +260,7 @@ class _AutoScrollArticleState
 
         await Scrollable.ensureVisible(
           context,
-          duration: const Duration(
+          duration: Duration(
             milliseconds: 350,
           ),
           curve: Curves.easeOutCubic,

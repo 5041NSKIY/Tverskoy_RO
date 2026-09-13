@@ -235,18 +235,18 @@ Future<void> _loadWeeklyReport() async {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(
+        side: BorderSide(
           color: Colors.white24,
         ),
       ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w600,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: Icon(Icons.chevron_right),
       onTap: () {
         setState(() {
           _selectedMemoFaction = title;
@@ -269,18 +269,18 @@ Future<void> _loadWeeklyReport() async {
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(
+        side: BorderSide(
           color: Colors.white24,
         ),
       ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w600,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: Icon(Icons.chevron_right),
       onTap: () {
         setState(() {
           _selectedMemoDepartment = title;
@@ -345,18 +345,18 @@ Widget _buildMemoLink({
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
+          Icon(
             Icons.link,
             size: 18,
             color: Colors.lightBlueAccent,
           ),
 
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
 
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 color: Colors.lightBlueAccent,
                 decoration: TextDecoration.underline,
@@ -381,18 +381,18 @@ Widget _buildMemoLink({
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(
+        side: BorderSide(
           color: Colors.white24,
         ),
       ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w600,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: Icon(Icons.chevron_right),
       onTap: () {
         setState(() {
           _selectedMemoItem = title;
@@ -467,13 +467,13 @@ Widget _buildWeeklyReportLinksBlock({
       children: [
         Text(
           '$title [$filledCount] $suffix',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
         // ==========================================================
         // НЕДЕЛЬНЫЙ ОТЧЁТ — СТРОКИ ССЫЛОК
         // ==========================================================
@@ -502,7 +502,7 @@ Widget _buildWeeklyReportLinksBlock({
                 ),
               ),
 
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
 
               IconButton(
                 tooltip: 'Удалить строку',
@@ -517,14 +517,14 @@ Widget _buildWeeklyReportLinksBlock({
         // Автосохраняем отчёт после удаления строки.
         _saveWeeklyReport();
       },
-                icon: const Icon(
+                icon: Icon(
                   Icons.delete_outline,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
         ],
 
         Align(
@@ -540,11 +540,11 @@ Widget _buildWeeklyReportLinksBlock({
   // Автосохраняем отчёт после добавления новой строки.
   _saveWeeklyReport();
 },
-            icon: const Icon(
+            icon: Icon(
               Icons.add,
               size: 18,
             ),
-            label: const Text(
+            label: Text(
               'Добавить ссылку',
             ),
           ),
@@ -566,19 +566,19 @@ Widget _buildWeeklyReportLinksBlock({
                 _selectedMemoItem = null;
               });
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back,
               size: 18,
             ),
-            label: const Text(
+            label: Text(
               'Назад к памяткам отдела',
             ),
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
 
-        const Text(
+        Text(
           'Калькулятор недельного отчёта',
           style: TextStyle(
             fontSize: 28,
@@ -586,17 +586,17 @@ Widget _buildWeeklyReportLinksBlock({
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
 
-        const Text(
+        Text(
           'Управление кадров · Правительство',
           style: TextStyle(
-            color: Colors.white54,
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
             fontSize: 14,
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         TextField(
   controller: _weeklyReportTagController,
@@ -615,7 +615,7 @@ Widget _buildWeeklyReportLinksBlock({
   ),
 ),
 
-const SizedBox(height: 16),
+SizedBox(height: 16),
 
 Row(
   children: [
@@ -638,7 +638,7 @@ Row(
       ),
     ),
 
-    const SizedBox(width: 12),
+    SizedBox(width: 12),
 
     Expanded(
       child: TextField(
@@ -660,14 +660,14 @@ Row(
     ),
   ],
 ),
-const SizedBox(height: 24),
+SizedBox(height: 24),
 
 _buildWeeklyReportLinksBlock(
   title: 'Принято',
   suffix: 'человек',
   controllers: _weeklyReportAcceptedControllers,
 ),
-const SizedBox(height: 16),
+SizedBox(height: 16),
 
 _buildWeeklyReportLinksBlock(
   title: 'Уволено',
@@ -675,7 +675,7 @@ _buildWeeklyReportLinksBlock(
   controllers: _weeklyReportDismissedControllers,
 ),
 
-const SizedBox(height: 16),
+SizedBox(height: 16),
 
 _buildWeeklyReportLinksBlock(
   title: 'Повышено',
@@ -683,7 +683,7 @@ _buildWeeklyReportLinksBlock(
   controllers: _weeklyReportPromotedControllers,
 ),
 
-const SizedBox(height: 16),
+SizedBox(height: 16),
 
 _buildWeeklyReportLinksBlock(
   title: 'Подача гос.волны',
@@ -691,14 +691,14 @@ _buildWeeklyReportLinksBlock(
   controllers: _weeklyReportGovWaveControllers,
 ),
 
-const SizedBox(height: 16),
+SizedBox(height: 16),
 
 _buildWeeklyReportLinksBlock(
   title: 'Принято экзаменов',
   suffix: '',
   controllers: _weeklyReportExamsControllers,
 ),
-const SizedBox(height: 24),
+SizedBox(height: 24),
 
 SizedBox(
   height: 48,
@@ -715,7 +715,7 @@ SizedBox(
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
             'Недельный отчёт скопирован',
           ),
@@ -723,16 +723,16 @@ SizedBox(
         ),
       );
     },
-    icon: const Icon(
+    icon: Icon(
       Icons.copy,
       size: 18,
     ),
-    label: const Text(
+    label: Text(
       'Скопировать отчёт',
     ),
   ),
 ),
-const SizedBox(height: 12),
+SizedBox(height: 12),
 
 if (!_weeklyReportClearConfirm)
   SizedBox(
@@ -743,11 +743,11 @@ if (!_weeklyReportClearConfirm)
           _weeklyReportClearConfirm = true;
         });
       },
-      icon: const Icon(
+      icon: Icon(
         Icons.delete_outline,
         size: 18,
       ),
-      label: const Text(
+      label: Text(
         'Очистить отчёт',
       ),
     ),
@@ -764,7 +764,7 @@ else
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
+        Text(
           'Точно очистить отчёт?',
           style: TextStyle(
             fontSize: 16,
@@ -772,17 +772,17 @@ else
           ),
         ),
 
-        const SizedBox(height: 6),
+        SizedBox(height: 6),
 
-        const Text(
+        Text(
           'Будут удалены даты, тэг и все ссылки.',
           style: TextStyle(
-            color: Colors.white54,
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
             fontSize: 13,
           ),
         ),
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12),
 
         Row(
           children: [
@@ -793,13 +793,13 @@ else
                     _weeklyReportClearConfirm = false;
                   });
                 },
-                child: const Text(
+                child: Text(
                   'Отмена',
                 ),
               ),
             ),
 
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
 
             Expanded(
               child: ElevatedButton(
@@ -813,7 +813,7 @@ else
                   });
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text(
                         'Недельный отчёт очищен',
                       ),
@@ -821,7 +821,7 @@ else
                     ),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'Да, очистить',
                 ),
               ),
@@ -859,19 +859,19 @@ if (_selectedMemoFaction == 'Правительство' &&
               _selectedMemoItem = null;
             });
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             size: 18,
           ),
-          label: const Text(
+          label: Text(
             'Назад к памяткам отдела',
           ),
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Обязанности отдела',
         style: TextStyle(
           fontSize: 28,
@@ -879,22 +879,22 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Управление кадров · Правительство',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
           fontSize: 14,
         ),
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
 
       Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
-    const Text(
+    Text(
       'ОБЯЗАННОСТИ ОТДЕЛА',
       style: TextStyle(
         fontSize: 18,
@@ -902,9 +902,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 16),
+    SizedBox(height: 16),
 
-    const Text(
+    Text(
       'Проверять каналы:',
       style: TextStyle(
         fontSize: 16,
@@ -912,7 +912,7 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
     _buildMemoLink(
       title: '🔓・выдача-ролей',
@@ -929,20 +929,20 @@ if (_selectedMemoFaction == 'Правительство' &&
       url: 'https://discord.com/channels/1538939600549191830/1540120233614901280',
     ),
 
-    const SizedBox(height: 16),
+    SizedBox(height: 16),
 
-    const Text(
+    Text(
       'На обращения, требующие реакции, необходимо отвечать.',
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 22),
+    SizedBox(height: 22),
 
-    const Text(
+    Text(
       '🔓・выдача-ролей',
       style: TextStyle(
         fontSize: 16,
@@ -950,21 +950,21 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 6),
+    SizedBox(height: 6),
 
-    const SelectableText(
+    SelectableText(
       'Во время набора каждому сотруднику, принятому в организацию, '
       'необходимо выдать соответствующие роли — Правительство, Академия ФСО.',
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 22),
+    SizedBox(height: 22),
 
-    const Text(
+    Text(
       '📑・кадровый-аудит',
       style: TextStyle(
         fontSize: 16,
@@ -972,21 +972,21 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 6),
+    SizedBox(height: 6),
 
-    const SelectableText(
+    SelectableText(
       'Все кадровые действия в отношении сотрудников должны фиксироваться '
       'в кадровом аудите.',
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 10),
+    SizedBox(height: 10),
 
-    const SelectableText(
+    SelectableText(
       '• Повышение\n'
       '• Понижение\n'
       '• Выдача выговора\n'
@@ -996,22 +996,22 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.6,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 10),
+    SizedBox(height: 10),
 
-    const Text(
+    Text(
       'Все действия производятся через бота, путём вызова команды:',
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
     Container(
       padding: const EdgeInsets.symmetric(
@@ -1025,19 +1025,19 @@ if (_selectedMemoFaction == 'Правительство' &&
           color: Colors.white12,
         ),
       ),
-      child: const SelectableText(
+      child: SelectableText(
         '/название команды',
         style: TextStyle(
           fontSize: 14,
           fontFamily: 'monospace',
-          color: Colors.white,
+          color: Theme.of(context).textTheme.bodyMedium!.color!,
         ),
       ),
     ),
 
-    const SizedBox(height: 22),
+    SizedBox(height: 22),
 
-    const Text(
+    Text(
       '・заявки-на-увал',
       style: TextStyle(
         fontSize: 16,
@@ -1045,16 +1045,16 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 6),
+    SizedBox(height: 6),
 
-    const SelectableText(
+    SelectableText(
       'Рассмотреть заявку → оформить увольнение в кадровом аудите → '
       'отправить запись об увольнении в ・заявки-на-увал '
       'с тегом @Помощник ГСК.',
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
   ],
@@ -1080,19 +1080,19 @@ if (_selectedMemoFaction == 'Правительство' &&
               _selectedMemoItem = null;
             });
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             size: 18,
           ),
-          label: const Text(
+          label: Text(
             'Назад к памяткам отдела',
           ),
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Проведение собеседования',
         style: TextStyle(
           fontSize: 28,
@@ -1100,22 +1100,22 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Управление кадров · Правительство',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
           fontSize: 14,
         ),
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
 
       Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
-    const Text(
+    Text(
       '📋 ПАМЯТКА ПО ПРОВЕДЕНИЮ НАБОРА В ПРАВИТЕЛЬСТВО',
       style: TextStyle(
         fontSize: 18,
@@ -1123,22 +1123,22 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 12),
+    SizedBox(height: 12),
 
-    const SelectableText(
+    SelectableText(
       'Памятка для сотрудников, проводящих собеседования.\n\n'
       'Наша задача — не найти повод отказать кандидату, а проверить его '
       'соответствие требованиям Правительства и правилам проекта.',
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '1️⃣ НАЧАЛО СОБЕСЕДОВАНИЯ',
       style: TextStyle(
         fontSize: 16,
@@ -1146,9 +1146,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Перед началом:\n'
       '• представьтесь кандидату;\n'
       '• сообщите о начале собеседования;\n'
@@ -1160,13 +1160,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '2️⃣ ПРОВЕРКА ПАСПОРТА',
       style: TextStyle(
         fontSize: 16,
@@ -1174,9 +1174,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Обязательно проверяем имя и фамилию кандидата.\n\n'
       '❌ Обращаем внимание на:\n'
       '• NonRP имя или фамилию;\n'
@@ -1192,13 +1192,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '3️⃣ МЕДИЦИНСКИЕ СПРАВКИ И ДОКУМЕНТЫ',
       style: TextStyle(
         fontSize: 16,
@@ -1206,9 +1206,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Проверяем не только наличие документов, но и то, как кандидат их предоставляет и комментирует.\n\n'
       '✅ Нормально:\n'
       '«Передал медицинскую справку человеку напротив».\n\n'
@@ -1222,13 +1222,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '4️⃣ МОТИВАЦИЯ КАНДИДАТА',
       style: TextStyle(
         fontSize: 16,
@@ -1236,9 +1236,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Можно задать простые вопросы:\n'
       '• расскажите немного о себе;\n'
       '• почему хотите работать в Правительстве;\n'
@@ -1251,13 +1251,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '5️⃣ RP-ПОВЕДЕНИЕ НА СОБЕСЕДОВАНИИ',
       style: TextStyle(
         fontSize: 16,
@@ -1265,9 +1265,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Собеседование — полноценный RP-процесс.\n\n'
       'Для проверки понимания RP можно:\n'
       '• попросить кандидата отжаться;\n'
@@ -1290,13 +1290,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '6️⃣ ПРОВЕРКА MG / DM / RP',
       style: TextStyle(
         fontSize: 16,
@@ -1304,9 +1304,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Проверяйте знания так, чтобы кандидат не был вынужден сам произносить '
       'OOC-информацию в IC-разговоре.\n\n'
       'Можно использовать условные IC-обозначения и ситуационные вопросы.\n\n'
@@ -1317,13 +1317,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '7️⃣ ПРИМЕРЫ MG / NONRP',
       style: TextStyle(
         fontSize: 16,
@@ -1331,9 +1331,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       '❌ «У меня 1 уровень, к вам можно?»\n'
       '❌ «Мне админ сказал сюда прийти».\n'
       '❌ «У меня паспорт забагался».\n'
@@ -1345,13 +1345,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '8️⃣ НЕ ПЫТАЕМСЯ «ЗАВАЛИТЬ» КАНДИДАТА',
       style: TextStyle(
         fontSize: 16,
@@ -1359,9 +1359,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Наша задача — проверить кандидата, а не специально добиться ошибки.\n\n'
       '✅ Можно:\n'
       '• задавать ситуационные вопросы;\n'
@@ -1377,13 +1377,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '9️⃣ ОШИБКА И НАРУШЕНИЕ — НЕ ОДНО И ТО ЖЕ',
       style: TextStyle(
         fontSize: 16,
@@ -1391,9 +1391,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       '🟡 Ошибка в знаниях:\n'
       'кандидат неправильно ответил, перепутал формулировку или не полностью '
       'помнит статью, но понимает общий смысл.\n\n'
@@ -1404,13 +1404,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '🔟 НЕ ПРИДУМЫВАЕМ ПРИЧИНЫ ДЛЯ ОТКАЗА',
       style: TextStyle(
         fontSize: 16,
@@ -1418,9 +1418,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Каждый отказ должен иметь понятную и объективную причину.\n\n'
       '❌ Нельзя:\n'
       '«Мне не понравился ваш голос».\n'
@@ -1431,13 +1431,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '1️⃣1️⃣ ЕСЛИ ВЫ НЕ УВЕРЕНЫ',
       style: TextStyle(
         fontSize: 16,
@@ -1445,9 +1445,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Если возникла спорная ситуация:\n'
       '• не спешите отказывать;\n'
       '• не придумывайте трактовку самостоятельно;\n'
@@ -1458,13 +1458,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '1️⃣2️⃣ ЗАВЕРШЕНИЕ СОБЕСЕДОВАНИЯ',
       style: TextStyle(
         fontSize: 16,
@@ -1472,9 +1472,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       'Если кандидат прошёл собеседование:\n'
       '• сообщите ему о положительном результате;\n'
       '• предоставьте спецсвязь;\n'
@@ -1488,13 +1488,13 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 24),
+    SizedBox(height: 24),
 
-    const Text(
+    Text(
       '🚨 ОСНОВНЫЕ ОШИБКИ КАДРОВИКА',
       style: TextStyle(
         fontSize: 16,
@@ -1502,9 +1502,9 @@ if (_selectedMemoFaction == 'Правительство' &&
       ),
     ),
 
-    const SizedBox(height: 8),
+    SizedBox(height: 8),
 
-    const SelectableText(
+    SelectableText(
       '❌ Не заметил NonRP имя/фамилию.\n'
       '❌ Проигнорировал MG/NonRP кандидата.\n'
       '❌ Не проверил необходимые документы.\n'
@@ -1518,11 +1518,11 @@ if (_selectedMemoFaction == 'Правительство' &&
       style: TextStyle(
         fontSize: 15,
         height: 1.5,
-        color: Colors.white70,
+        color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
       ),
     ),
 
-    const SizedBox(height: 28),
+    SizedBox(height: 28),
 
     // ========================================================
     // БЫСТРАЯ ШПАРГАЛКА КАДРОВИКА
@@ -1537,7 +1537,7 @@ if (_selectedMemoFaction == 'Правительство' &&
           width: 1,
         ),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -1590,14 +1590,14 @@ if (_selectedMemoFaction == 'Правительство' &&
             style: TextStyle(
               fontSize: 15,
               height: 1.55,
-              color: Colors.white,
+              color: Theme.of(context).textTheme.bodyMedium!.color!,
             ),
           ),
         ],
       ),
     ),
 
-    const SizedBox(height: 20),
+    SizedBox(height: 20),
 
     Container(
       padding: const EdgeInsets.all(14),
@@ -1608,14 +1608,14 @@ if (_selectedMemoFaction == 'Правительство' &&
           color: Colors.white12,
         ),
       ),
-      child: const Text(
+      child: Text(
         '📌 Главный принцип: мы не ищем повод отказать кандидату. '
         'Мы проверяем, соответствует ли он установленным требованиям.',
         style: TextStyle(
           fontSize: 14,
           height: 1.5,
           fontWeight: FontWeight.w600,
-          color: Colors.white70,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
         ),
       ),
     ),
@@ -1645,19 +1645,19 @@ if (_selectedMemoFaction == 'Правительство' &&
               _selectedMemoItem = null;
             });
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             size: 18,
           ),
-          label: const Text(
+          label: Text(
             'Назад к памяткам отдела',
           ),
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Система повышения',
         style: TextStyle(
           fontSize: 28,
@@ -1665,17 +1665,17 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Управление кадров · Правительство',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
           fontSize: 14,
         ),
       ),
 
-      const SizedBox(height: 24),
+      SizedBox(height: 24),
 
       // ======================================================
       // СТАЖЁР → СЕКРЕТАРЬ
@@ -1692,7 +1692,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'СТАЖЁР → СЕКРЕТАРЬ',
               style: TextStyle(
                 fontSize: 19,
@@ -1700,9 +1700,9 @@ if (_selectedMemoFaction == 'Правительство' &&
               ),
             ),
 
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
-            const Text(
+            Text(
               'Сдать экзамен по знанию:',
               style: TextStyle(
                 fontSize: 15,
@@ -1710,7 +1710,7 @@ if (_selectedMemoFaction == 'Правительство' &&
               ),
             ),
 
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
 
             // --------------------------------------------------
             // ВНУТРЕННЯЯ ССЫЛКА — ОБЯЗАННОСТИ ОТДЕЛА
@@ -1722,7 +1722,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                 });
               },
               borderRadius: BorderRadius.circular(8),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 7,
                   horizontal: 4,
@@ -1761,7 +1761,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                 });
               },
               borderRadius: BorderRadius.circular(8),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 7,
                   horizontal: 4,
@@ -1790,7 +1790,7 @@ if (_selectedMemoFaction == 'Правительство' &&
               ),
             ),
 
-            const SizedBox(height: 6),
+            SizedBox(height: 6),
 
             // ==================================================
             // РАСКРЫВАЮЩАЯСЯ ПАМЯТКА ДЛЯ МЛАДШЕГО СОСТАВА
@@ -1813,11 +1813,11 @@ if (_selectedMemoFaction == 'Правительство' &&
                   16,
                   16,
                 ),
-                leading: const Icon(
+                leading: Icon(
                   Icons.menu_book_outlined,
                   color: Colors.lightBlueAccent,
                 ),
-                title: const Text(
+                title: Text(
                   'Памятка для младшего состава',
                   style: TextStyle(
                     fontSize: 15,
@@ -1826,7 +1826,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                   ),
                 ),
                 children: [
-                  const SelectableText(
+                  SelectableText(
                     'Если вы сомневаетесь в имени/фамилии кандидата, '
                     'самостоятельно напишите в /report и уточните, допустимо ли '
                     'данное имя/фамилия.\n\n'
@@ -1834,13 +1834,13 @@ if (_selectedMemoFaction == 'Правительство' &&
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.5,
-                      color: Colors.white70,
+                      color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
-                  const Text(
+                  Text(
                     'Правильно составленный кадровый аудит:',
                     style: TextStyle(
                       fontSize: 14,
@@ -1848,7 +1848,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
 
                   Container(
                     width: double.infinity,
@@ -1860,7 +1860,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                         color: Colors.white12,
                       ),
                     ),
-                    child: const SelectableText(
+                    child: SelectableText(
                       '/увольнение пользователь ранг причина\n\n'
                       '/повышение пользователь был стал причина\n\n'
                       '/принятие пользователь ранг причина\n\n'
@@ -1869,19 +1869,19 @@ if (_selectedMemoFaction == 'Правительство' &&
                         fontSize: 14,
                         height: 1.5,
                         fontFamily: 'monospace',
-                        color: Colors.white,
+                        color: Theme.of(context).textTheme.bodyMedium!.color!,
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14),
 
                   
                 ],
               ),
             ),
 
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
 
             // --------------------------------------------------
             // ФКЗ О ПРАВИТЕЛЬСТВЕ
@@ -1892,20 +1892,20 @@ if (_selectedMemoFaction == 'Правительство' &&
                   'https://forum.russia.online/threads/federal-nyi-konstitutsionnyi-zakon-no-1-fkz-o-pravitel-stve.1185/',
             ),
 
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
-            const Text(
+            Text(
               'Экзамен принимается старшим составом или старшими секретарями.',
               style: TextStyle(
                 fontSize: 14,
                 height: 1.5,
-                color: Colors.white70,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
               ),
             ),
 
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
-            const Text(
+            Text(
               'Запросы на проведение экзамена',
               style: TextStyle(
                 fontSize: 15,
@@ -1913,20 +1913,20 @@ if (_selectedMemoFaction == 'Правительство' &&
               ),
             ),
 
-            const SizedBox(height: 18),
+            SizedBox(height: 18),
 
-            const SelectableText(
+            SelectableText(
               '• Получить удостоверение.',
               style: TextStyle(
                 fontSize: 15,
                 height: 1.5,
-                color: Colors.white70,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
               ),
             ),
 
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
 
-            const Text(
+            Text(
               'Дежурство в холле Правительства — 1 час',
               style: TextStyle(
                 fontSize: 15,
@@ -1934,9 +1934,9 @@ if (_selectedMemoFaction == 'Правительство' &&
               ),
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
 
-            const SelectableText(
+            SelectableText(
               'Необходимо предоставить отчёт из 5 скриншотов с HUD:\n\n'
               '• начало дежурства;\n'
               '• через 15 минут;\n'
@@ -1951,14 +1951,14 @@ if (_selectedMemoFaction == 'Правительство' &&
               style: TextStyle(
                 fontSize: 14,
                 height: 1.55,
-                color: Colors.white70,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
               ),
             ),
           ],
         ),
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
 
       // ======================================================
       // СЕКРЕТАРЬ → СТАРШИЙ СЕКРЕТАРЬ
@@ -1975,7 +1975,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'СЕКРЕТАРЬ → СТАРШИЙ СЕКРЕТАРЬ',
               style: TextStyle(
                 fontSize: 19,
@@ -1983,9 +1983,9 @@ if (_selectedMemoFaction == 'Правительство' &&
               ),
             ),
 
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
-            const SelectableText(
+            SelectableText(
               'Для повышения необходимо:\n\n'
               '• находиться в отделе 5 дней и более;\n\n'
               '• набрать с момента назначения на 8 ранг '
@@ -1995,11 +1995,11 @@ if (_selectedMemoFaction == 'Правительство' &&
               style: TextStyle(
                 fontSize: 15,
                 height: 1.55,
-                color: Colors.white70,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
               ),
             ),
 
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
             Container(
               padding: const EdgeInsets.all(12),
@@ -2010,7 +2010,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                   color: Colors.white12,
                 ),
               ),
-              child: const SelectableText(
+              child: SelectableText(
                 'Пример:\n'
                 '40 кадровых действий + 8 подач GNews = 80 кадровых.\n\n'
                 'Подачи должны быть отправлены в соответствующий канал '
@@ -2018,12 +2018,12 @@ if (_selectedMemoFaction == 'Правительство' &&
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.5,
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.bodyMedium!.color!,
                 ),
               ),
             ),
 
-            const SizedBox(height: 14),
+            SizedBox(height: 14),
 
             // --------------------------------------------------
             // ТРУДОВОЙ КОДЕКС
@@ -2034,7 +2034,7 @@ if (_selectedMemoFaction == 'Правительство' &&
                   'https://forum.russia.online/threads/trudovoi-kodeks.1395/',
             ),
 
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
 
             // --------------------------------------------------
             // КАНАЛ ОТЧЁТОВ
@@ -2048,7 +2048,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
 
       // ======================================================
       // КОРОТКОЕ НАПОМИНАНИЕ
@@ -2062,14 +2062,14 @@ if (_selectedMemoFaction == 'Правительство' &&
             color: Colors.white12,
           ),
         ),
-        child: const Text(
+        child: Text(
           '📌 Перед подачей отчёта на повышение убедитесь, '
           'что выполнены все требования для вашего текущего ранга.',
           style: TextStyle(
             fontSize: 14,
             height: 1.5,
             fontWeight: FontWeight.w600,
-            color: Colors.white70,
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
           ),
         ),
       ),
@@ -2107,13 +2107,13 @@ if (_selectedMemoFaction == 'Правительство' &&
           if (title != null) ...[
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: Colors.white54,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
           ],
 
           Row(
@@ -2122,16 +2122,16 @@ if (_selectedMemoFaction == 'Правительство' &&
               Expanded(
                 child: SelectableText(
                   command,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
                     fontFamily: 'monospace',
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.bodyMedium!.color!,
                   ),
                 ),
               ),
 
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
 
               IconButton(
                 tooltip: 'Скопировать',
@@ -2143,13 +2143,13 @@ if (_selectedMemoFaction == 'Правительство' &&
                   if (!mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text('Скопировано'),
                       duration: Duration(seconds: 1),
                     ),
                   );
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.copy,
                   size: 18,
                 ),
@@ -2175,19 +2175,19 @@ if (_selectedMemoFaction == 'Правительство' &&
               _selectedMemoItem = null;
             });
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             size: 18,
           ),
-          label: const Text(
+          label: Text(
             'Назад к памяткам отдела',
           ),
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Быстрые команды',
         style: TextStyle(
           fontSize: 28,
@@ -2195,22 +2195,22 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Управление кадров · Правительство',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
           fontSize: 14,
         ),
       ),
 
-      const SizedBox(height: 24),
+      SizedBox(height: 24),
 
       // ======================================================
       // 1. ПОДАЧА ГОСУДАРСТВЕННОЙ ВОЛНЫ
       // ======================================================
-      const Text(
+      Text(
         '1. Подача гос.волны',
         style: TextStyle(
           fontSize: 19,
@@ -2218,9 +2218,9 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 14),
+      SizedBox(height: 14),
 
-      const Text(
+      Text(
         'Запрос свободной волны',
         style: TextStyle(
           fontSize: 15,
@@ -2228,25 +2228,25 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
       quickCommandBox(
         command:
             '/dep ко всем: Свободна ли волна на 00:15/00:25/00:35?',
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
-      const SelectableText(
+      SelectableText(
         '⏱ Ждём 2 минуты.',
         style: TextStyle(
           fontSize: 14,
           height: 1.5,
-          color: Colors.white70,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
         ),
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
       quickCommandBox(
         title: 'Повторяем запрос',
@@ -2254,30 +2254,30 @@ if (_selectedMemoFaction == 'Правительство' &&
             '/dep ко всем: Свободна ли волна на 00:15/00:25/00:35? *Повторяя*',
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
-      const SelectableText(
+      SelectableText(
         'Если ответ не поступил — занимаем государственную волну.',
         style: TextStyle(
           fontSize: 14,
           height: 1.5,
-          color: Colors.white70,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
         ),
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
       quickCommandBox(
         command:
             '/dep ко всем: Не услышал ответа, занял гос волну на 00:15/00:25/00:35.',
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
 
       // ------------------------------------------------------
       // ПЕРВАЯ GNEWS — НАЧАЛО НАБОРА
       // ------------------------------------------------------
-      const Text(
+      Text(
         'Начало набора',
         style: TextStyle(
           fontSize: 16,
@@ -2285,7 +2285,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
       quickCommandBox(
         title: 'Первая GNews',
@@ -2293,9 +2293,9 @@ if (_selectedMemoFaction == 'Правительство' &&
             '/gnews Уважаемые жители г. Москвы, в данный момент началось собеседование в Правительство РО. Не упустите шанс пополнить ряды государственных служащих. Набор идет в: ФСО, Управление кадров, Министерство Культуры, а также Коллегию Адвокатов. При себе требуется иметь медицинскую справку. Собеседование проходит в здании Тверского районного суда, обозначенного на городских картах «Правительство». С уважением, Управление кадров Правительства РО.',
       ),
 
-      const SizedBox(height: 16),
+      SizedBox(height: 16),
 
-      const Text(
+      Text(
         'Через 10 минут',
         style: TextStyle(
           fontSize: 16,
@@ -2303,7 +2303,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
       quickCommandBox(
         title: 'Вторая GNews',
@@ -2311,9 +2311,9 @@ if (_selectedMemoFaction == 'Правительство' &&
             '/gnews Уважаемые жители г. Москвы, в данный момент проводится собеседование в Правительство РО. Не упустите шанс пополнить ряды государственных служащих. Набор идет в: ФСО, Управление кадров, Министерство Культуры, а также Коллегию Адвокатов. При себе требуется иметь медицинскую справку. Собеседование проходит в здании Тверского районного суда, обозначенного на городских картах «Правительство». С уважением, Управление кадров Правительства РО.',
       ),
 
-      const SizedBox(height: 16),
+      SizedBox(height: 16),
 
-      const Text(
+      Text(
         'Ещё через 10 минут — конец набора',
         style: TextStyle(
           fontSize: 16,
@@ -2321,7 +2321,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
       quickCommandBox(
         title: 'Третья GNews',
@@ -2329,29 +2329,29 @@ if (_selectedMemoFaction == 'Правительство' &&
             '/gnews Уважаемые жители г. Москвы, собеседование в Правительство РО закончилось. Если вы упустили свой шанс пополнить ряды государственных служащих. А именно в: ФСО, Управление кадров, Министерство Культуры, а также Коллегию Адвокатов. Заполняйте электронные заявки на портале Округа. С уважением, Управление кадров Правительства РО.',
       ),
 
-      const SizedBox(height: 16),
+      SizedBox(height: 16),
 
-      const Text(
+      Text(
         'После опубликования трёх GNews освобождаем волну:',
         style: TextStyle(
           fontSize: 14,
           height: 1.5,
-          color: Colors.white70,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
       quickCommandBox(
         command: '/dep ко всем: Освободил гос. волну.',
       ),
 
-      const SizedBox(height: 32),
+      SizedBox(height: 32),
 
       // ======================================================
       // 2. RP-ОТЫГРОВКИ
       // ======================================================
-      const Text(
+      Text(
         '2. RP-отыгровки',
         style: TextStyle(
           fontSize: 19,
@@ -2359,24 +2359,24 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Использовать одну или несколько при проверке кандидата.',
         style: TextStyle(
           fontSize: 14,
-          color: Colors.white54,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
         ),
       ),
 
-      const SizedBox(height: 14),
+      SizedBox(height: 14),
 
       quickCommandBox(
         command:
             '/do Около клавиатуры лежит фиолетовая папка с документами.',
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
       quickCommandBox(
         command:
@@ -2385,26 +2385,26 @@ if (_selectedMemoFaction == 'Правительство' &&
             '/me убрал скрепку в карман.',
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
       quickCommandBox(
         command:
             '/do В календаре маркер отстаёт на один день.',
       ),
 
-      const SizedBox(height: 10),
+      SizedBox(height: 10),
 
       quickCommandBox(
         command:
             '/do На компьютере запущена "Косынка".',
       ),
 
-      const SizedBox(height: 32),
+      SizedBox(height: 32),
 
       // ======================================================
       // 3. ШЕПНУТЬ DISCORD
       // ======================================================
-      const Text(
+      Text(
         '3. Шепнуть свой Discord',
         style: TextStyle(
           fontSize: 19,
@@ -2412,18 +2412,18 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 14),
+      SizedBox(height: 14),
 
       quickCommandBox(
         command: '/w 000 5041nskiy',
       ),
 
-      const SizedBox(height: 32),
+      SizedBox(height: 32),
 
       // ======================================================
       // 4. СООБЩЕНИЕ В ЛИЧКУ DISCORD
       // ======================================================
-      const Text(
+      Text(
         '4. Сообщение в личку Discord',
         style: TextStyle(
           fontSize: 19,
@@ -2431,11 +2431,11 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 14),
+      SizedBox(height: 14),
 
     
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       quickCommandBox(
         title: 'Сообщение сотруднику',
@@ -2446,7 +2446,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'Писать в получение роли.',
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
     ],
   );
 }
@@ -2493,17 +2493,17 @@ if (_selectedMemoFaction == 'Правительство' &&
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
 
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
 
                     Text(
                       url,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         color: Colors.lightBlueAccent,
                         decoration: TextDecoration.underline,
@@ -2516,7 +2516,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             ),
           ),
 
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
 
           IconButton(
             tooltip: 'Скопировать ссылку',
@@ -2528,13 +2528,13 @@ if (_selectedMemoFaction == 'Правительство' &&
               if (!mounted) return;
 
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text('Ссылка скопирована'),
                   duration: Duration(seconds: 1),
                 ),
               );
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.copy,
               size: 18,
             ),
@@ -2558,19 +2558,19 @@ if (_selectedMemoFaction == 'Правительство' &&
               _selectedMemoItem = null;
             });
           },
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             size: 18,
           ),
-          label: const Text(
+          label: Text(
             'Назад к памяткам отдела',
           ),
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Основные ссылки',
         style: TextStyle(
           fontSize: 28,
@@ -2578,17 +2578,17 @@ if (_selectedMemoFaction == 'Правительство' &&
         ),
       ),
 
-      const SizedBox(height: 8),
+      SizedBox(height: 8),
 
-      const Text(
+      Text(
         'Управление кадров · Правительство',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
           fontSize: 14,
         ),
       ),
 
-      const SizedBox(height: 24),
+      SizedBox(height: 24),
 
       // ======================================================
       // DISCORD
@@ -2598,7 +2598,7 @@ if (_selectedMemoFaction == 'Правительство' &&
         url: 'https://discord.gg/GYPcmc7NdA',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       // ======================================================
       // ЗАКОНОДАТЕЛЬСТВО
@@ -2609,7 +2609,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://forum.russia.online/threads/trudovoi-kodeks.1395/',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       linkBox(
         title: 'ФКЗ «О Правительстве»',
@@ -2617,7 +2617,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://forum.russia.online/threads/federal-nyi-konstitutsionnyi-zakon-no-1-fkz-o-pravitel-stve.1185/',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       // ======================================================
       // КАДРОВЫЕ КАНАЛЫ
@@ -2628,7 +2628,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://discord.com/channels/1538939600549191830/1538939604168867901',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       linkBox(
         title: 'Выдача ролей',
@@ -2636,7 +2636,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://discord.com/channels/1538939600549191830/1538939603606573070',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       linkBox(
         title: 'Заявки на увал',
@@ -2644,7 +2644,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://discord.com/channels/1538939600549191830/1540120233614901280',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       linkBox(
         title: 'Отчёт о проделанной работе',
@@ -2652,7 +2652,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://discord.com/channels/1538939600549191830/1540483241277128815',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       linkBox(
         title: 'Запрос на экзамен',
@@ -2660,7 +2660,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://discord.com/channels/1538939600549191830/1543987051362254948',
       ),
 
-      const SizedBox(height: 12),
+      SizedBox(height: 12),
 
       linkBox(
         title: 'Отчёты на повышение',
@@ -2668,7 +2668,7 @@ if (_selectedMemoFaction == 'Правительство' &&
             'https://discord.com/channels/1538939600549191830/1541840207245222038',
       ),
 
-      const SizedBox(height: 20),
+      SizedBox(height: 20),
     ],
   );
 }
@@ -2687,42 +2687,42 @@ if (_selectedMemoFaction == 'Правительство' &&
                   _selectedMemoItem = null;
                 });
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back,
                 size: 18,
               ),
-              label: const Text(
+              label: Text(
                 'Назад к памяткам отдела',
               ),
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
           Text(
             _selectedMemoItem!,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Управление кадров · Правительство',
             style: TextStyle(
-              color: Colors.white54,
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               fontSize: 14,
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
-          const Text(
+          Text(
             'Содержимое этого раздела добавим следующим шагом.',
             style: TextStyle(
-              color: Colors.white70,
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
               fontSize: 14,
             ),
           ),
@@ -2745,19 +2745,19 @@ if (_selectedMemoFaction == 'Правительство' &&
                   _selectedMemoItem = null;
                 });
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back,
                 size: 18,
               ),
-              label: const Text(
+              label: Text(
                 'Назад к отделам',
               ),
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Управление кадров',
             style: TextStyle(
               fontSize: 28,
@@ -2765,52 +2765,52 @@ if (_selectedMemoFaction == 'Правительство' &&
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Правительство',
             style: TextStyle(
-              color: Colors.white54,
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               fontSize: 14,
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           _buildMemoItemTile(
             icon: Icons.assignment_outlined,
             title: 'Обязанности отдела',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoItemTile(
             icon: Icons.record_voice_over_outlined,
             title: 'Проведение собеседования',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoItemTile(
   icon: Icons.trending_up_outlined,
   title: 'Система повышения',
 ),
 
-const SizedBox(height: 10),
+SizedBox(height: 10),
 
           _buildMemoItemTile(
             icon: Icons.bolt_outlined,
             title: 'Быстрые команды',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoItemTile(
             icon: Icons.link_outlined,
             title: 'Основные ссылки',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoItemTile(
             icon: Icons.calculate_outlined,
@@ -2836,19 +2836,19 @@ const SizedBox(height: 10),
                   _selectedMemoItem = null;
                 });
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back,
                 size: 18,
               ),
-              label: const Text(
+              label: Text(
                 'Назад к списку фракций',
               ),
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Правительство',
             style: TextStyle(
               fontSize: 28,
@@ -2856,66 +2856,66 @@ const SizedBox(height: 10),
             ),
           ),
 
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Выберите отдел',
             style: TextStyle(
-              color: Colors.white54,
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               fontSize: 14,
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           _buildMemoDepartmentTile(
             icon: Icons.dashboard_outlined,
             title: 'Общая',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.groups_outlined,
             title: 'Управление кадров',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.shield_outlined,
             title: 'ФСО',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.gavel_outlined,
             title: 'Судебная власть',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.balance_outlined,
             title: 'Адвокатура',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.medical_services_outlined,
             title: 'Мин. Здрав.',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.account_balance_wallet_outlined,
             title: 'Мин. Фин.',
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
 
           _buildMemoDepartmentTile(
             icon: Icons.local_police_outlined,
@@ -2929,7 +2929,7 @@ const SizedBox(height: 10),
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Text(
+        Text(
           'Памятки',
           style: TextStyle(
             fontSize: 28,
@@ -2937,59 +2937,59 @@ const SizedBox(height: 10),
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
 
-        const Text(
+        Text(
           'Выберите фракцию',
           style: TextStyle(
-            color: Colors.white54,
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
             fontSize: 14,
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         _buildMemoFactionTile(
           icon: Icons.account_balance_outlined,
           title: 'Правительство',
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         _buildMemoFactionTile(
           icon: Icons.local_hospital_outlined,
           title: 'Больница',
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         _buildMemoFactionTile(
           icon: Icons.local_police_outlined,
           title: 'МВД',
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         _buildMemoFactionTile(
           icon: Icons.traffic_outlined,
           title: 'ГИБДД',
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         _buildMemoFactionTile(
           icon: Icons.military_tech_outlined,
           title: 'АРМИЯ',
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         _buildMemoFactionTile(
           icon: Icons.security_outlined,
           title: 'ФСБ',
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         _buildMemoFactionTile(
           icon: Icons.balance_outlined,

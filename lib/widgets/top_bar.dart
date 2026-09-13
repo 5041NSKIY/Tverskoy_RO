@@ -71,7 +71,7 @@ class _TopBarState extends State<TopBar> {
   data: MediaQuery.of(context).copyWith(
     textScaler: TextScaler.noScaling,
   ),
-  child: const SizedBox(
+  child: SizedBox(
     width: 185,
     height: 68,
     child: Row(
@@ -106,7 +106,7 @@ class _TopBarState extends State<TopBar> {
                 fontSize: 10,
                 fontStyle:
                     FontStyle.italic,
-                color: Colors.white54,
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               ),
             ),
           ],

@@ -194,10 +194,13 @@ class _SettingsScreenState
 
           const SizedBox(height: 8),
 
-          const Text(
+          Text(
             'Настройки внешнего вида и поведения Tverskoy RO.',
             style: TextStyle(
-              color: Colors.white54,
+              color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.54),
               fontSize: 14,
             ),
           ),
@@ -234,8 +237,11 @@ class _SettingsScreenState
 
                 Text(
                   '${(widget.textScale * 100).round()}%',
-                  style: const TextStyle(
-                    color: Colors.white54,
+                  style: TextStyle(
+                    color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.54),
                   ),
                 ),
 
@@ -252,10 +258,13 @@ class _SettingsScreenState
                       widget.onTextScaleChanged,
                 ),
 
-                const Text(
+                Text(
                   '80% · 90% · 100% · 110% · 120% · 130%',
                   style: TextStyle(
-                    color: Colors.white38,
+                    color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.38),
                     fontSize: 12,
                   ),
                 ),
@@ -293,10 +302,13 @@ class _SettingsScreenState
 
                 const SizedBox(height: 6),
 
-                const Text(
+                Text(
                   'Выберите акцентный цвет.',
                   style: TextStyle(
-                    color: Colors.white54,
+                    color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.54),
                     fontSize: 13,
                   ),
                 ),
@@ -417,10 +429,13 @@ Container(
 
       const SizedBox(height: 6),
 
-      const Text(
+      Text(
         'Выберите основной цвет текста.',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.54),
           fontSize: 13,
         ),
       ),
@@ -546,10 +561,13 @@ Container(
 
                 const SizedBox(height: 6),
 
-                const Text(
+                Text(
                   'Показывает или скрывает оверлей, даже когда активно другое окно.',
                   style: TextStyle(
-                    color: Colors.white54,
+                    color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.54),
                     fontSize: 13,
                   ),
                 ),
@@ -630,10 +648,13 @@ Container(
 
                 const SizedBox(height: 8),
 
-                const Text(
+                Text(
                   'Используй хотя бы один модификатор: Ctrl, Alt, Shift или Win.',
                   style: TextStyle(
-                    color: Colors.white38,
+                    color: Theme.of(context)
+    .colorScheme
+    .onSurface
+    .withValues(alpha: 0.38),
                     fontSize: 12,
                   ),
                 ),

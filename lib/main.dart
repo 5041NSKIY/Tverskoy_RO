@@ -458,8 +458,9 @@ Future<void> _registerHotKey() async {
   colorScheme: ColorScheme.fromSeed(
   seedColor: _accentColor,
   brightness: Brightness.dark,
-).copyWith(
+ ).copyWith(
   onSurface: _textColor,
+  onSurfaceVariant: _textColor,
 ),
 textTheme: ThemeData.dark()
     .textTheme

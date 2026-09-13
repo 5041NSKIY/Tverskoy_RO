@@ -18,7 +18,7 @@ class FavoritesScreen extends StatelessWidget {
   final Set<String> favoriteArticleIds;
   final Widget Function(LawArticle article) articleBuilder;
 
-  const FavoritesScreen({
+  FavoritesScreen({
     super.key,
     required this.articles,
     required this.favoriteArticleIds,
@@ -36,7 +36,7 @@ class FavoritesScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Text(
+        Text(
           'Избранное',
           style: TextStyle(
             fontSize: 24,
@@ -44,17 +44,17 @@ class FavoritesScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
 
-        const Text(
+        Text(
           'Сохранённые статьи законов и пункты правил.',
           style: TextStyle(
-            color: Colors.white54,
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
             fontSize: 13,
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         if (favoriteArticles.isEmpty)
           Container(
@@ -66,18 +66,18 @@ class FavoritesScreen extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.08),
               ),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Icon(
                   Icons.star_border,
-                  color: Colors.white38,
+                  color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.38),
                 ),
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Пока пусто. Нажми на звёздочку у нужной статьи или пункта правил.',
                     style: TextStyle(
-                      color: Colors.white54,
+                      color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
                       height: 1.4,
                     ),
                   ),

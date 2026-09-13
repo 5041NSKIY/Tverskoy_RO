@@ -13,7 +13,7 @@ import '../widgets/common_widgets.dart';
 class RulesScreen extends StatelessWidget {
   final void Function(String documentName) onOpenDocument;
 
-  const RulesScreen({
+  RulesScreen({
     super.key,
     required this.onOpenDocument,
   });
@@ -23,7 +23,7 @@ class RulesScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Text(
+        Text(
           'Правила Россия Онлайн',
           style: TextStyle(
             fontSize: 24,
@@ -31,7 +31,7 @@ class RulesScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         DocumentTile(
           shortName: 'ОПП',

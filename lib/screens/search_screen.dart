@@ -20,7 +20,7 @@ class SearchScreen extends StatelessWidget {
 
   final Widget Function(LawArticle article) articleBuilder;
 
-  const SearchScreen({
+  SearchScreen({
     super.key,
     required this.searchQuery,
     required this.articles,
@@ -89,7 +89,7 @@ class SearchScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        const Text(
+        Text(
           'Результаты поиска',
           style: TextStyle(
             fontSize: 24,
@@ -97,36 +97,36 @@ class SearchScreen extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: 8),
 
         Text(
           'Запрос: $searchQuery',
-          style: const TextStyle(
-            color: Colors.white70,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.70),
             fontSize: 14,
           ),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
 
         if (results.isEmpty)
-          const Text(
+          Text(
             'Ничего не найдено.',
             style: TextStyle(
-              color: Colors.white54,
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               fontSize: 14,
             ),
           )
         else ...[
           Text(
             'Найдено: ${results.length}',
-            style: const TextStyle(
-              color: Colors.white54,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
               fontSize: 14,
             ),
           ),
 
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
 
           for (final article in results)
             articleBuilder(article),
