@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 class TopBar extends StatefulWidget {
   final double opacity;
 
+  /// Значение поиска хранится в main.dart.
+  final String searchQuery;
+
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<double> onOpacityChanged;
   final ValueChanged<double> onOpacityChangeEnd;
@@ -18,6 +21,7 @@ class TopBar extends StatefulWidget {
   const TopBar({
     super.key,
     required this.opacity,
+    required this.searchQuery,
     required this.onSearchChanged,
     required this.onOpacityChanged,
     required this.onStartDragging,
@@ -32,10 +36,16 @@ State<TopBar> createState() => _TopBarState();
 class _TopBarState extends State<TopBar> {
   late double _localOpacity;
 
+  final TextEditingController
+      _searchController =
+      TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _localOpacity = widget.opacity;
+    _searchController.text =
+        widget.searchQuery;
   }
 
   @override
@@ -47,7 +57,28 @@ class _TopBarState extends State<TopBar> {
     if (oldWidget.opacity != widget.opacity) {
       _localOpacity = widget.opacity;
     }
+
+    if (oldWidget.searchQuery !=
+        widget.searchQuery &&
+        _searchController.text !=
+            widget.searchQuery) {
+      _searchController.text =
+          widget.searchQuery;
+
+      _searchController.selection =
+          TextSelection.collapsed(
+        offset:
+            widget.searchQuery.length,
+      );
+    }
   }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,56 +96,45 @@ class _TopBarState extends State<TopBar> {
             onPanStart: (_) {
               widget.onStartDragging();
             },
-            child: MediaQuery(
-  // Логотип не зависит от пользовательского
-  // масштаба текста интерфейса.
-  data: MediaQuery.of(context).copyWith(
-    textScaler: TextScaler.noScaling,
-  ),
-  child: SizedBox(
-    width: 185,
-    height: 68,
-    child: Row(
-      children: [
-        Icon(
-          Icons.balance,
-          size: 28,
-        ),
-
-        SizedBox(width: 10),
-
-        Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Tverskoy RO',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight:
-                    FontWeight.w700,
+            child: const SizedBox(
+              width: 185,
+              height: 68,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.balance,
+                    size: 28,
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Tverskoy RO',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight:
+                              FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'by 5041nskiy',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontStyle:
+                              FontStyle.italic,
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-
-            SizedBox(height: 2),
-
-            Text(
-              'by. 5041nskiy',
-              style: TextStyle(
-                fontSize: 10,
-                fontStyle:
-                    FontStyle.italic,
-                color: Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.54),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  ),
-),
           ),
 
           const SizedBox(width: 10),
@@ -124,6 +144,7 @@ class _TopBarState extends State<TopBar> {
           // ----------------------------------------------------
           Expanded(
             child: TextField(
+              controller: _searchController,
               onChanged: widget.onSearchChanged,
               decoration: InputDecoration(
                 hintText:

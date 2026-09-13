@@ -108,6 +108,16 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
   /// Сохраняем ID, чтобы избранное переживало перезапуск приложения.
   Set<String> _favoriteArticleIds = <String>{};
 
+
+  /// Избранные памятки.
+  /// Хранятся отдельно от статей/правил, чтобы не ломать старый ключ.
+  List<Map<String, String>> _favoriteMemos =
+      <Map<String, String>>[];
+
+  /// Если переход пришёл из «Избранного», здесь лежит памятка,
+  /// которую MemosScreen должен открыть сразу.
+  Map<String, String>? _pendingFavoriteMemo;
+
   // ==========================================================
   // АВТООБНОВЛЕНИЕ ЧЕРЕЗ GITHUB RELEASES
   // ==========================================================
@@ -161,6 +171,7 @@ class _MajesticLawAppState extends State<MajesticLawApp> {
 
     /// Загружаем сохранённое избранное.
     _loadFavorites();
+    _loadFavoriteMemos();
 
     _loadTextScale();
 
@@ -390,6 +401,48 @@ Future<void> _loadFavorites() async {
     _favoriteArticleIds = savedIds;
   });
 }
+/// Загружает избранные памятки.
+Future<void> _loadFavoriteMemos() async {
+  final saved =
+      await StorageService.loadFavoriteMemos();
+
+  if (!mounted) return;
+
+  setState(() {
+    _favoriteMemos = saved;
+  });
+}
+
+/// Открывает памятку из общего экрана «Избранное».
+void _openFavoriteMemo(
+  Map<String, String> memo,
+) {
+  setState(() {
+    _pendingFavoriteMemo =
+        Map<String, String>.from(memo);
+    _selectedPage = 3;
+    _searchQuery = '';
+  });
+}
+
+/// Удаляет памятку прямо из экрана «Избранное».
+Future<void> _removeFavoriteMemo(
+  String memoId,
+) async {
+  final updated = _favoriteMemos
+      .where((memo) => memo['id'] != memoId)
+      .map((memo) => Map<String, String>.from(memo))
+      .toList();
+
+  setState(() {
+    _favoriteMemos = updated;
+  });
+
+  await StorageService.saveFavoriteMemos(
+    updated,
+  );
+}
+
 Future<void> _loadTextScale() async {
   final value =
       await StorageService.loadTextScale();
@@ -541,6 +594,7 @@ textTheme: ThemeData.dark()
   Widget _buildTopBar() {
   return TopBar(
     opacity: _opacity,
+    searchQuery: _searchQuery,
 
     onSearchChanged: (value) {
       setState(() {
@@ -603,6 +657,9 @@ textTheme: ThemeData.dark()
     },
 
     onMemos: () {
+      setState(() {
+        _pendingFavoriteMemo = null;
+      });
       _openPage(3);
     },
 
@@ -638,6 +695,15 @@ textTheme: ThemeData.dark()
 
   /// ЭТА ХУЙНЯ РЕШАЕТ, ЧТО ПОКАЗАТЬ В ЦЕНТРАЛЬНОЙ ЧАСТИ.
   Widget _buildMainContent() {
+    // На странице «Памятки» верхняя строка поиска
+    // использует поиск по памяткам, а не поиск по законам.
+    if (_searchQuery.trim().isNotEmpty &&
+        _selectedPage == 3) {
+      return _buildMemosPage(
+        searchQuery: _searchQuery,
+      );
+    }
+
     if (_searchQuery.trim().isNotEmpty) {
       return _buildSearchPage();
     }
@@ -785,6 +851,9 @@ Widget _buildHomePage() {
     },
 
     onOpenMemos: () {
+      setState(() {
+        _pendingFavoriteMemo = null;
+      });
       _openPage(3);
     },
 
@@ -841,27 +910,58 @@ Widget _buildRulesPage() {
   // ПАМЯТКИ
   // ==========================================================
 
-  Widget _buildMemosPage() {
-    return const MemosScreen();
+  Widget _buildMemosPage({
+    String? searchQuery,
+  }) {
+    final memo = _pendingFavoriteMemo;
+
+    return MemosScreen(
+      initialFaction: memo?['faction'],
+      initialDepartment: memo?['department'],
+      initialItem: memo?['title'],
+      initialSearchQuery: searchQuery,
+
+      initialEditableScope:
+          memo?['scope'],
+      initialEditableMemoId:
+          memo?['memoId'],
+      initialEditableSectionId:
+          memo?['sectionId'],
+
+      onSearchClosed: () {
+        if (_searchQuery.isEmpty) {
+          return;
+        }
+
+        setState(() {
+          _searchQuery = '';
+        });
+      },
+
+      onFavoritesChanged: _loadFavoriteMemos,
+    );
   }
 
   // ==========================================================
   // ИЗБРАННОЕ
   // ==========================================================
 
-  /// Показывает сохранённые статьи законов и пункты правил RO.
+  /// Показывает сохранённые статьи, правила и памятки.
   Widget _buildFavoritesPage() {
-  return FavoritesScreen(
-    articles: [
-      ..._articles,
-      ..._roRules,
-    ],
-    favoriteArticleIds: _favoriteArticleIds,
-    articleBuilder: (article) {
-      return _buildArticleTile(article);
-    },
-  );
-}
+    return FavoritesScreen(
+      articles: [
+        ..._articles,
+        ..._roRules,
+      ],
+      favoriteArticleIds: _favoriteArticleIds,
+      articleBuilder: (article) {
+        return _buildArticleTile(article);
+      },
+      favoriteMemos: _favoriteMemos,
+      onOpenMemo: _openFavoriteMemo,
+      onRemoveMemo: _removeFavoriteMemo,
+    );
+  }
 
   // ==========================================================
   // ОТКРЫТЫЙ ДОКУМЕНТ
